@@ -1,8 +1,11 @@
 100 sd
+100 s
+100 s
 100 moye
 100 mithunvoe
 100 kabya
 100 j
+100 d
 100 Saha
 100 Kabya
 100 Amio
@@ -13,12 +16,15 @@
 80 h
 70 weta
 70 sdf
+70 s
 70 Kabya
+60 hk
 50 sdfsdf
 50 monu
 40 sd
 40 m
 40 m
+40 ewr
 10 sdf
 10 hello
 10 ds

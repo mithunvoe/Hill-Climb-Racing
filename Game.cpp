@@ -111,11 +111,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bg.addComponent<SpriteComponent>("assets/bg.png");
     bg.addGroup(groupMap);
     bg.addGroup(groupSlide);
-    bgg.addComponent<TransformComponent>(961, 0, 960, 640, 1);
+    bgg.addComponent<TransformComponent>(960, 0, 960, 640, 1);
     bgg.addComponent<SpriteComponent>("assets/bg.png");
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
-
+    // swap(bg, bgg);
     // bgg=bg;
 
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
@@ -219,6 +219,12 @@ void Game::update()
     manager.update();
     if (gari.getComponent<TransformComponent>().velocity.x > 0.1)
         Mix_PlayChannel(-1, engine, 0);
+    if(bg.getComponent<TransformComponent>().position.x<=-960)
+    {
+        bg.getComponent<TransformComponent>().position.x=0;
+        bgg.getComponent<TransformComponent>().position.x=960;
+    }
+    cout<<bg.getComponent<TransformComponent>().position.x<<endl;
 
     SDL_GetMouseState(&x, &y);
     cursor.getComponent<TransformComponent>().position.x = x;
