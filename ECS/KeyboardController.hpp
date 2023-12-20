@@ -21,6 +21,7 @@ public:
         {
             switch (Game::event.key.keysym.sym)
             {
+
             case SDLK_RIGHT:
                 transform->velocity += Vector2D(-.2, 0);
                 break;

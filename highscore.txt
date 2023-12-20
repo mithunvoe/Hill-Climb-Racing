@@ -1,6 +1,7 @@
 100 sd
 100 s
 100 s
+100 s
 100 moye
 100 mithunvoe
 100 kabya
@@ -25,6 +26,13 @@
 40 m
 40 m
 40 ewr
+40 [Cs4s
+40 [A[Bddsf
 10 sdf
+10 s
+10 s
 10 hello
+10 f
 10 ds
+10 d
+10 d

@@ -219,11 +219,17 @@ void Game::update()
     manager.update();
     if (gari.getComponent<TransformComponent>().velocity.x > 0.1)
         Mix_PlayChannel(-1, engine, 0);
-    if(bg.getComponent<TransformComponent>().position.x<=-960)
+    if(bg.getComponent<TransformComponent>().position.x<-960)
     {
         bg.getComponent<TransformComponent>().position.x=0;
         bgg.getComponent<TransformComponent>().position.x=960;
     }
+    else if(bgg.getComponent<TransformComponent>().position.x>960)
+    {
+        bg.getComponent<TransformComponent>().position.x=-960;
+        bgg.getComponent<TransformComponent>().position.x=0;
+    }
+
     cout<<bg.getComponent<TransformComponent>().position.x<<endl;
 
     SDL_GetMouseState(&x, &y);
