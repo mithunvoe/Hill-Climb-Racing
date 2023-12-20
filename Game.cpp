@@ -39,6 +39,7 @@ bool endCursorCollision;
 auto &gari(manager.addEntity());
 auto &wall(manager.addEntity());
 auto &bg(manager.addEntity());
+auto &bgg(manager.addEntity());
 auto &menu(manager.addEntity());
 auto &cursor(manager.addEntity());
 auto &startbutton(manager.addEntity());
@@ -50,7 +51,8 @@ enum groupLabels : size_t
 {
     groupMap,
     groupPlayers,
-    groupColliders
+    groupColliders,
+    groupSlide
 };
 enum animLabel : int
 {
@@ -108,6 +110,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     bg.addComponent<SpriteComponent>("assets/bg.png");
     bg.addGroup(groupMap);
+    bg.addGroup(groupSlide);
+    bgg.addComponent<TransformComponent>(961, 0, 960, 640, 1);
+    bgg.addComponent<SpriteComponent>("assets/bg.png");
+    bgg.addGroup(groupMap);
+    bgg.addGroup(groupSlide);
+
+    // bgg=bg;
 
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
@@ -127,13 +136,17 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         coin[i]->addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
         coin[i]->addComponent<ColliderComponent>("coin");
         coin[i]->addGroup(groupMap);
+        coin[i]->addGroup(groupSlide);
     }
+    for (auto &it : manager.getGroup(groupSlide))
+        it->addComponent<KeyboardController>();
     TTF_Init();
     Game::font = TTF_OpenFont("assets/fnt.ttf", 200);
 }
 
 auto &tiles(manager.getGroup(groupMap));
 auto &players(manager.getGroup(groupPlayers));
+auto &slide(manager.getGroup(groupSlide));
 
 void Game::setMenu()
 {
@@ -269,7 +282,6 @@ void Game::clean()
     SDL_DestroyTexture(tempTex);
     SDL_Quit();
     printf("Game Cleaned\nScore: %d\n", currentScore);
-    
 }
 void Game::AddTile(int id, int x, int y, int w, int h)
 {
