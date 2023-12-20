@@ -6,8 +6,6 @@
 #include "Collision.hpp"
 #include "highscore.hpp"
 
-
-
 Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
