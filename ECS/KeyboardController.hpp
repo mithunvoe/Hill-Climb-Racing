@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef kb_hpp
+#define kb_hpp
 
 #include "../Game.hpp"
 #include "ECS.hpp"
@@ -24,9 +26,15 @@ public:
 
             case SDLK_RIGHT:
                 transform->velocity += Vector2D(-.2, 0);
+
+                Game::currentFuel -= 0.25;
+                // cout << Game::currentFuel << endl;
+
                 break;
             case SDLK_LEFT:
                 transform->velocity += Vector2D(.2, 0);
+                Game::currentFuel -= 0.25;
+
                 break;
             case SDLK_UP:
                 transform->position.y -= 1;
@@ -51,3 +59,4 @@ public:
     KeyboardController(/* args */) = default;
     ~KeyboardController() = default;
 };
+#endif

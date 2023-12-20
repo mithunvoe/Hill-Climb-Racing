@@ -6,6 +6,7 @@
 #include "Collision.hpp"
 #include "highscore.hpp"
 
+double Game::currentFuel = 1000.0;
 Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
@@ -18,7 +19,7 @@ SDL_Texture *whitend1;
 SDL_Texture *whitestart2;
 SDL_Texture *whitend2;
 SDL_Texture *tempTex;
-SDL_Texture *fuelTex;
+SDL_Texture *fuelbarTex;
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -30,9 +31,9 @@ Mix_Chunk *engine;
 
 int groundLevel = 350;
 int currentScore;
-int currentFuel = 100;
+// int currentFuel = 100;
 int x, y;
-
+// Game::currentFuel = 1000;
 bool majhkhanerstart;
 bool majhkhanerend;
 bool startCursorCollision;
@@ -48,7 +49,6 @@ auto &startbutton(manager.addEntity());
 auto &endbutton(manager.addEntity());
 auto &scoreCoin(manager.addEntity());
 auto &fuel(manager.addEntity());
-
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -220,6 +220,7 @@ void Game::handleEvents()
 }
 void Game::update()
 {
+
     manager.refresh();
     manager.update();
     if (gari.getComponent<TransformComponent>().velocity.x > 0.1)
@@ -275,15 +276,25 @@ void Game::render()
         src.w = 1000;
         src.h = 900;
         tempTex = TextureManager::CreateTextTexture(Game::font, to_string(currentScore));
-        fuelTex = TextureManager::CreateTextTexture(Game::font, to_string(currentFuel));
-
+        // fuelTex = TextureManager::CreateTextTexture(Game::font, to_string(currentFuel));
+        fuelbarTex = TextureManager::loadTexture("assets/fuelbar.png");
         for (auto &t : tiles)
             t->draw();
         for (auto &p : players)
             p->draw();
         TextureManager::Draw(tempTex, src, dest);
         dest.x += 600;
-        TextureManager::Draw(fuelTex, src, dest);
+        src.x = 1000 - currentFuel;
+        src.y = 0;
+        dest.y = 50;
+        dest.w = 200 * currentFuel / 1000;
+        dest.x = 675 + 200 - dest.w;
+        dest.h = 25;
+        src.w = 1200;
+        src.h = 150;
+        TextureManager::Draw(fuelbarTex, src, dest);
+        SDL_DestroyTexture(tempTex);
+        SDL_DestroyTexture(fuelbarTex);
     }
     SDL_RenderPresent(renderer);
 }

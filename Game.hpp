@@ -27,12 +27,13 @@ public:
     void setMenu();
     bool running() { return isRunning; };
     TTF_Font *font;
-
+    static double currentFuel;
+    
 private:
     bool isRunning;
     int cnt = 0;
     SDL_Window *window;
-    // SDL_Renderer *renderer;
+    
 };
 
 #endif
