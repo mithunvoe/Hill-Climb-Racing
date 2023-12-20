@@ -123,7 +123,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addGroup(groupMap);
 
     gari.addComponent<TransformComponent>(1, groundLevel, 325, 215, .4);
-    gari.addComponent<KeyboardController>();
+    // gari.addComponent<KeyboardController>();
     gari.addComponent<SpriteComponent>("assets/carAnim.png", spaceAnim, 5, "car");
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);

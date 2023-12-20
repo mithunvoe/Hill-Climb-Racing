@@ -23,10 +23,10 @@ public:
             {
 
             case SDLK_RIGHT:
-                transform->velocity += Vector2D(.2, 0);
+                transform->velocity += Vector2D(-.2, 0);
                 break;
             case SDLK_LEFT:
-                transform->velocity += Vector2D(-.2, 0);
+                transform->velocity += Vector2D(.2, 0);
                 break;
             case SDLK_UP:
                 transform->position.y -= 1;
