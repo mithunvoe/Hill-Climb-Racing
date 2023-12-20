@@ -5,10 +5,6 @@ using namespace std;
 
 int main()
 {
-    for (int i = 0; i < 5; i++)
-    {
-        static int hehe = 5;
-        hehe++;
-        cout << hehe nl;
-    }
+    int a = -5;
+    cout<<a%3;
 }

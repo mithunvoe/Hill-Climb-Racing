@@ -8,6 +8,7 @@ class SpriteComponent : public Component
 {
 private:
     TransformComponent *transform;
+    TransformComponent *bgTransform;
     SDL_Texture *texture;
     int animated = 0;
     int frames = 0;
@@ -21,7 +22,6 @@ public:
     {
         texture = TextureManager::loadTexture(path);
     }
-
     SpriteComponent() = default;
     SpriteComponent(const char *path)
     {
@@ -34,12 +34,15 @@ public:
         Animation coin = Animation(0, frames, 50);
         animations.emplace(animName, coin);
         play(animName);
-
-        // Animation idle = Animation(0, 3, 100);
-        // Animation walk = Animation(1, 8, 100);
-        // animations.emplace("Idle", idle);
-        // animations.emplace("Walk", walk);
-        // play("Idle");
+    }
+    SpriteComponent(const char *path, int isAnimated, int frames, const char *animName, TransformComponent &hehe)
+    {
+        setTex(path);
+        animated = isAnimated;
+        Animation coin = Animation(0, frames, 50);
+        animations.emplace(animName, coin);
+        play(animName);
+        bgTransform = &hehe;
     }
     SpriteComponent(SDL_Texture *tex)
     {
@@ -66,6 +69,7 @@ public:
     }
     void update() override
     {
+        // cout << animated << ". ";
         if (animated == 1)
         {
             srcRect.x = srcRect.w * static_cast<int>(((SDL_GetTicks() / speed) % frames));
@@ -73,6 +77,10 @@ public:
         if (animated == 2)
         {
             srcRect.x = srcRect.w * static_cast<int>((int)(transform->position.x * .5) % frames);
+        }
+        if (animated == 3)
+        {
+            srcRect.x = srcRect.w * static_cast<int>((((int)(-bgTransform->position.x * .5) % frames)+frames)%frames);
         }
         srcRect.y = animIndex * transform->height;
         destRect.x = (int)transform->position.x;

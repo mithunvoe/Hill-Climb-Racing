@@ -58,9 +58,9 @@ enum animLabel : int
 {
     noAnim,
     timeAnim,
-    spaceAnim
+    spaceAnim,
+    chakaAnim
 };
-
 Game::Game() {}
 Game::~Game() {}
 
@@ -123,8 +123,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addGroup(groupMap);
 
     gari.addComponent<TransformComponent>(1, groundLevel, 325, 215, .4);
-    // gari.addComponent<KeyboardController>();
-    gari.addComponent<SpriteComponent>("assets/carAnim.png", spaceAnim, 5, "car");
+    gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
 
@@ -214,23 +213,22 @@ void Game::handleEvents()
 }
 void Game::update()
 {
-
     manager.refresh();
     manager.update();
     if (gari.getComponent<TransformComponent>().velocity.x > 0.1)
         Mix_PlayChannel(-1, engine, 0);
-    if(bg.getComponent<TransformComponent>().position.x<-960)
+    if (bg.getComponent<TransformComponent>().position.x < -960)
     {
-        bg.getComponent<TransformComponent>().position.x=0;
-        bgg.getComponent<TransformComponent>().position.x=960;
+        bg.getComponent<TransformComponent>().position.x = 0;
+        bgg.getComponent<TransformComponent>().position.x = 960;
     }
-    else if(bgg.getComponent<TransformComponent>().position.x>960)
+    else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
-        bg.getComponent<TransformComponent>().position.x=-960;
-        bgg.getComponent<TransformComponent>().position.x=0;
+        bg.getComponent<TransformComponent>().position.x = -960;
+        bgg.getComponent<TransformComponent>().position.x = 0;
     }
 
-    cout<<bg.getComponent<TransformComponent>().position.x<<endl;
+    // cout<<bg.getComponent<TransformComponent>().position.x<<endl;
 
     SDL_GetMouseState(&x, &y);
     cursor.getComponent<TransformComponent>().position.x = x;
