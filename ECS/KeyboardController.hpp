@@ -42,7 +42,7 @@ public:
                 break;
             }
         }
-        else if (abs(transform->velocity.x) > 0.00001 and transform->position.y > 315 - 42)
+        else if (abs(transform->velocity.x) > 0.00001)
         {
             transform->velocity /= Vector2D(1.01, 1.01);
         }
