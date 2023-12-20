@@ -18,6 +18,7 @@ SDL_Texture *whitend1;
 SDL_Texture *whitestart2;
 SDL_Texture *whitend2;
 SDL_Texture *tempTex;
+SDL_Texture *fuelTex;
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -29,6 +30,7 @@ Mix_Chunk *engine;
 
 int groundLevel = 350;
 int currentScore;
+int currentFuel = 100;
 int x, y;
 
 bool majhkhanerstart;
@@ -45,6 +47,8 @@ auto &cursor(manager.addEntity());
 auto &startbutton(manager.addEntity());
 auto &endbutton(manager.addEntity());
 auto &scoreCoin(manager.addEntity());
+auto &fuel(manager.addEntity());
+
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -121,6 +125,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
     scoreCoin.addGroup(groupMap);
+    fuel.addComponent<TransformComponent>(870, 14, 2068, 2072, 0.04);
+    fuel.addComponent<SpriteComponent>("assets/fuel.png");
+    fuel.addGroup(groupMap);
 
     gari.addComponent<TransformComponent>(1, groundLevel, 325, 215, .4);
     gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
@@ -268,12 +275,15 @@ void Game::render()
         src.w = 1000;
         src.h = 900;
         tempTex = TextureManager::CreateTextTexture(Game::font, to_string(currentScore));
+        fuelTex = TextureManager::CreateTextTexture(Game::font, to_string(currentFuel));
 
         for (auto &t : tiles)
             t->draw();
         for (auto &p : players)
             p->draw();
         TextureManager::Draw(tempTex, src, dest);
+        dest.x += 600;
+        TextureManager::Draw(fuelTex, src, dest);
     }
     SDL_RenderPresent(renderer);
 }
