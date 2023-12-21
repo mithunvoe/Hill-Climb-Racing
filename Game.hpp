@@ -24,16 +24,17 @@ public:
     static std::vector<ColliderComponent *> colliders;
     static void AddTile(int id, int x, int y, int w, int h);
     bool inMenu = 1;
+    bool musicOn = 1;
+    bool inLeaderboard = 0;
     void setMenu();
     bool running() { return isRunning; };
     TTF_Font *font;
     static double currentFuel;
-    
+
 private:
     bool isRunning;
     int cnt = 0;
     SDL_Window *window;
-    
 };
 
 #endif

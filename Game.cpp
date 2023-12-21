@@ -20,6 +20,9 @@ SDL_Texture *whitestart2;
 SDL_Texture *whitend2;
 SDL_Texture *tempTex;
 SDL_Texture *fuelbarTex;
+SDL_Texture *musiconTex;
+SDL_Texture *musicoffTex;
+SDL_Texture *leaderboardTex;
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -51,6 +54,8 @@ auto &endbutton(manager.addEntity());
 auto &scoreCoin(manager.addEntity());
 auto &fuel(manager.addEntity());
 auto &fuelBorder(manager.addEntity());
+auto &musicButton(manager.addEntity());
+auto &leaderboard(manager.addEntity());
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -94,6 +99,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<TransformComponent>(0, 0, 85, 150, 0.5);
     cursor.addComponent<SpriteComponent>("assets/cursor.png");
     cursor.addComponent<ColliderComponent>();
+    SDL_ShowCursor(false);
 
     brownstart = TextureManager::loadTexture("assets/startbuttonb.png");
     whitestart1 = TextureManager::loadTexture("assets/startbuttonw1.png");
@@ -109,9 +115,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     endbutton.addComponent<TransformComponent>(0, 380, 1084, 353, 0.3);
     endbutton.addComponent<SpriteComponent>(brownend);
     endbutton.getComponent<TransformComponent>().position.x = width / 2 - endbutton.getComponent<SpriteComponent>().destRect.w / 2;
-
     endbutton.addComponent<ColliderComponent>("ebutton");
-    SDL_ShowCursor(false);
+
+    musiconTex = TextureManager::loadTexture("assets/musicon.png");
+    musicoffTex = TextureManager::loadTexture("assets/musicoff.png");
+
+    musicButton.addComponent<TransformComponent>(890, 570, 900, 900, 0.073);
+    musicButton.addComponent<SpriteComponent>(musiconTex);
 
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     bg.addComponent<SpriteComponent>("assets/bg.png");
@@ -121,6 +131,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addComponent<SpriteComponent>("assets/bg.png");
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
+
+    leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
+    leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
+
     // swap(bg, bgg);
     // bgg=bg;
 
@@ -185,6 +199,21 @@ void Game::handleEvents()
     case SDL_KEYUP:
         if (event.key.keysym.sym == SDLK_ESCAPE)
             setMenu();
+        else if (event.key.keysym.sym == SDLK_m)
+        {
+            if (musicOn)
+            {
+                Mix_PauseMusic();
+                musicOn = 0;
+                musicButton.getComponent<SpriteComponent>().setTexfromTex(musicoffTex);
+            }
+            else
+            {
+                Mix_ResumeMusic();
+                musicOn = 1;
+                musicButton.getComponent<SpriteComponent>().setTexfromTex(musiconTex);
+            }
+        }
         break;
     case SDL_MOUSEBUTTONDOWN:
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
@@ -274,10 +303,17 @@ void Game::render()
     SDL_RenderClear(renderer);
     if (inMenu)
     {
-        menu.draw();
-        startbutton.draw();
-        endbutton.draw();
-        cursor.draw();
+        if (inLeaderboard)
+        {
+            leaderboard.draw();
+        }
+        else
+        {
+            menu.draw();
+            startbutton.draw();
+            endbutton.draw();
+            cursor.draw();
+        }
     }
     else
     {
@@ -309,6 +345,7 @@ void Game::render()
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }
+    musicButton.draw();
     SDL_RenderPresent(renderer);
 }
 
@@ -324,6 +361,8 @@ void Game::clean()
     SDL_DestroyTexture(whitestart1);
     SDL_DestroyTexture(whitestart2);
     SDL_DestroyTexture(tempTex);
+    Mix_FreeMusic(bgm);
+    Mix_CloseAudio();
     SDL_Quit();
     printf("Game Cleaned\nScore: %d\n", currentScore);
 }
