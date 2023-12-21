@@ -130,7 +130,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     fuelBorder.addComponent<TransformComponent>(666+5, 41+5, 210, 35, 0.99);
     fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
-    fuelBorder.addGroup(groupMap);
+    fuelBorder.addGroup(groupPlayers);
     // fuelBorder.getComponent<TransformComponent>().entity.
     // fuelBorder.getComponent<TransformComponent>().;
     // fuelBorder.getComponent<TransformComponent>().width=200;
@@ -291,8 +291,6 @@ void Game::render()
         fuelbarTex = TextureManager::loadTexture("assets/fuelbar.png");
         for (auto &t : tiles)
             t->draw();
-        for (auto &p : players)
-            p->draw();
         TextureManager::Draw(tempTex, src, dest);
         dest.x += 600;
         src.x = 1000 - currentFuel;
@@ -304,6 +302,8 @@ void Game::render()
         src.w = 1200;
         src.h = 150;
         TextureManager::Draw(fuelbarTex, src, dest);
+        for (auto &p : players)
+            p->draw();
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }

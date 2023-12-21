@@ -6,9 +6,14 @@
 100 sdf
 100 sdf
 100 sdf
+100 sdf
+100 s
 100 s
 100 m
+100 fu
+100 dsf
 100 dfg
+100 df
 100 d
 100 d
 100 d
@@ -16,8 +21,10 @@
 100 d
 100 cxg
 100 asd
+100 +hg
 90 [Adf
 80 s
+80 fgh
 70 fggh
 10 xcvg
 10 t
