@@ -49,6 +49,7 @@ auto &startbutton(manager.addEntity());
 auto &endbutton(manager.addEntity());
 auto &scoreCoin(manager.addEntity());
 auto &fuel(manager.addEntity());
+auto &fuelBorder(manager.addEntity());
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -125,9 +126,19 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
     scoreCoin.addGroup(groupMap);
+
+
+    fuelBorder.addComponent<TransformComponent>(666+5, 41+5, 210, 35, 0.99);
+    fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
+    fuelBorder.addGroup(groupMap);
+    // fuelBorder.getComponent<TransformComponent>().entity.
+    // fuelBorder.getComponent<TransformComponent>().;
+    // fuelBorder.getComponent<TransformComponent>().width=200;
+
     fuel.addComponent<TransformComponent>(870, 14, 2068, 2072, 0.04);
     fuel.addComponent<SpriteComponent>("assets/fuel.png");
     fuel.addGroup(groupMap);
+
 
     gari.addComponent<TransformComponent>(1, groundLevel, 325, 215, .4);
     gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
@@ -286,10 +297,10 @@ void Game::render()
         dest.x += 600;
         src.x = 1000 - currentFuel;
         src.y = 0;
-        dest.y = 50;
         dest.w = 200 * currentFuel / 1000;
-        dest.x = 675 + 200 - dest.w;
         dest.h = 25;
+        dest.x = 675 + 200 - dest.w;
+        dest.y = 50;
         src.w = 1200;
         src.h = 150;
         TextureManager::Draw(fuelbarTex, src, dest);
