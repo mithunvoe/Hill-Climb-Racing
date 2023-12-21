@@ -50,6 +50,7 @@ bool majhkhanerl;
 bool startCursorCollision;
 bool lCursorCollision;
 bool endCursorCollision;
+bool musicCursorCollision;
 
 auto &gari(manager.addEntity());
 auto &wall(manager.addEntity());
@@ -141,6 +142,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     musicButton.addComponent<TransformComponent>(890, 570, 900, 900, 0.073);
     musicButton.addComponent<SpriteComponent>(musiconTex);
+    musicButton.addComponent<ColliderComponent>("mbutton");
 
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     bg.addComponent<SpriteComponent>("assets/bg.png");
@@ -211,6 +213,7 @@ void Game::handleEvents()
     startCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), startbutton.getComponent<ColliderComponent>());
     endCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), endbutton.getComponent<ColliderComponent>());
     lCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), lbutton.getComponent<ColliderComponent>());
+    musicCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), musicButton.getComponent<ColliderComponent>());
     switch (event.type)
     {
     case SDL_QUIT:
@@ -262,6 +265,22 @@ void Game::handleEvents()
     case SDL_MOUSEBUTTONUP:
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
+            if (musicCursorCollision)
+            {
+                if (musicOn)
+                {
+                    musicOn = 0;
+                    Mix_PauseMusic();
+                    musicButton.getComponent<SpriteComponent>().setTexfromTex(musicoffTex);
+                }
+                else
+                {
+                    musicOn = 1;
+                    Mix_ResumeMusic();
+                    musicButton.getComponent<SpriteComponent>().setTexfromTex(musiconTex);
+                }
+                break;
+            }
             if (inLeaderboard)
                 inLeaderboard = 0;
             else
@@ -278,6 +297,7 @@ void Game::handleEvents()
                 {
                     inLeaderboard ^= 1;
                 }
+
                 else
                     majhkhanerend = majhkhanerstart = majhkhanerl = 0;
             }
@@ -378,6 +398,7 @@ void Game::render()
             lbutton.draw();
             endbutton.draw();
         }
+        musicButton.draw();
         cursor.draw();
     }
     else
@@ -410,7 +431,6 @@ void Game::render()
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }
-    musicButton.draw();
     SDL_RenderPresent(renderer);
 }
 
