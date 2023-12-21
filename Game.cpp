@@ -28,6 +28,7 @@ string name;
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
+Mix_Chunk *coinSound;
 
 int groundLevel = 350;
 int currentScore;
@@ -80,7 +81,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     bgm = Mix_LoadMUS("assets/bgm.mp3");
-    engine = Mix_LoadWAV("assets/engine.mp3");
+    coinSound = Mix_LoadWAV("assets/coin.wav");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
@@ -127,8 +128,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
     scoreCoin.addGroup(groupMap);
 
-
-    fuelBorder.addComponent<TransformComponent>(666+5, 41+5, 210, 35, 0.99);
+    fuelBorder.addComponent<TransformComponent>(666 + 5, 41 + 4, 210, 35, 0.988);
     fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
     fuelBorder.addGroup(groupPlayers);
     // fuelBorder.getComponent<TransformComponent>().entity.
@@ -139,8 +139,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     fuel.addComponent<SpriteComponent>("assets/fuel.png");
     fuel.addGroup(groupMap);
 
-
-    gari.addComponent<TransformComponent>(1, groundLevel, 325, 215, .4);
+    gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .4);
     gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
@@ -234,8 +233,10 @@ void Game::update()
 
     manager.refresh();
     manager.update();
-    if (gari.getComponent<TransformComponent>().velocity.x > 0.1)
+    if (bg.getComponent<TransformComponent>().velocity.x < 0)
+    {
         Mix_PlayChannel(-1, engine, 0);
+    }
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
         bg.getComponent<TransformComponent>().position.x = 0;
@@ -262,6 +263,7 @@ void Game::update()
                 cc->tag = "khawaCoin";
                 cc->entity->getComponent<SpriteComponent>().remove();
                 currentScore += 10;
+                Mix_PlayChannel(-1, coinSound, 0);
             }
         }
     }
