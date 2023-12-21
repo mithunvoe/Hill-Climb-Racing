@@ -19,16 +19,15 @@ public:
     }
     void update() override
     {
-        if (Game::event.type == SDL_KEYDOWN)
+
+        if (Game::event.type == SDL_KEYDOWN && !Game::inMenu)
         {
             switch (Game::event.key.keysym.sym)
             {
-
             case SDLK_RIGHT:
                 transform->velocity += Vector2D(-.2, 0);
 
                 Game::currentFuel -= 0.25;
-                // cout << Game::currentFuel << endl;
 
                 break;
             case SDLK_LEFT:

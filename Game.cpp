@@ -7,22 +7,28 @@
 #include "highscore.hpp"
 
 double Game::currentFuel = 1000.0;
+bool Game::inMenu = 1;
 Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
 SDL_Event Game::event;
 SDL_Surface *tempSurface;
-SDL_Texture *brownstart;
 SDL_Texture *brownend;
-SDL_Texture *whitestart1;
 SDL_Texture *whitend1;
+SDL_Texture *brownstart;
+SDL_Texture *whitestart1;
 SDL_Texture *whitestart2;
 SDL_Texture *whitend2;
+SDL_Texture *whitel1;
+SDL_Texture *whitel2;
+SDL_Texture *brownl;
 SDL_Texture *tempTex;
 SDL_Texture *fuelbarTex;
 SDL_Texture *musiconTex;
 SDL_Texture *musicoffTex;
 SDL_Texture *leaderboardTex;
+SDL_Texture *nameTex;
+SDL_Texture *scoreTex;
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -40,7 +46,9 @@ int x, y;
 // Game::currentFuel = 1000;
 bool majhkhanerstart;
 bool majhkhanerend;
+bool majhkhanerl;
 bool startCursorCollision;
+bool lCursorCollision;
 bool endCursorCollision;
 
 auto &gari(manager.addEntity());
@@ -56,6 +64,7 @@ auto &fuel(manager.addEntity());
 auto &fuelBorder(manager.addEntity());
 auto &musicButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
+auto &lbutton(manager.addEntity());
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -63,7 +72,8 @@ enum groupLabels : size_t
     groupMap,
     groupPlayers,
     groupColliders,
-    groupSlide
+    groupSlide,
+    groupBg
 };
 enum animLabel : int
 {
@@ -92,11 +102,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     isRunning = (renderer) ? true : false;
     mapObject = new Map();
     Mix_PlayMusic(bgm, -1);
+    Score::inputScore();
 
     menu.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     menu.addComponent<SpriteComponent>("assets/menu.jpg");
 
-    cursor.addComponent<TransformComponent>(0, 0, 85, 150, 0.5);
+    cursor.addComponent<TransformComponent>(0, 0, 85, 150, 0.27);
     cursor.addComponent<SpriteComponent>("assets/cursor.png");
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
@@ -104,15 +115,23 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     brownstart = TextureManager::loadTexture("assets/startbuttonb.png");
     whitestart1 = TextureManager::loadTexture("assets/startbuttonw1.png");
     whitestart2 = TextureManager::loadTexture("assets/startbuttonw2.png");
-    startbutton.addComponent<TransformComponent>(0, 250, 1084, 353, 0.3);
+    startbutton.addComponent<TransformComponent>(0, 250 - 10, 1084, 353, 0.23);
     startbutton.addComponent<SpriteComponent>(brownstart);
     startbutton.getComponent<TransformComponent>().position.x = width / 2 - startbutton.getComponent<SpriteComponent>().destRect.w / 2;
     startbutton.addComponent<ColliderComponent>("sbutton");
 
+    brownl = TextureManager::loadTexture("assets/lbuttonb.png");
+    whitel1 = TextureManager::loadTexture("assets/lbuttonw1.png");
+    whitel2 = TextureManager::loadTexture("assets/lbuttonw2.png");
+    lbutton.addComponent<TransformComponent>(0, 350 - 10, 1084, 353, 0.23);
+    lbutton.addComponent<SpriteComponent>(brownl);
+    lbutton.getComponent<TransformComponent>().position.x = width / 2 - lbutton.getComponent<SpriteComponent>().destRect.w / 2;
+    lbutton.addComponent<ColliderComponent>("lbutton");
+
     brownend = TextureManager::loadTexture("assets/endbuttonb.png");
     whitend1 = TextureManager::loadTexture("assets/endbuttonw1.png");
     whitend2 = TextureManager::loadTexture("assets/endbuttonw2.png");
-    endbutton.addComponent<TransformComponent>(0, 380, 1084, 353, 0.3);
+    endbutton.addComponent<TransformComponent>(0, 450 - 10, 1084, 353, 0.23);
     endbutton.addComponent<SpriteComponent>(brownend);
     endbutton.getComponent<TransformComponent>().position.x = width / 2 - endbutton.getComponent<SpriteComponent>().destRect.w / 2;
     endbutton.addComponent<ColliderComponent>("ebutton");
@@ -126,11 +145,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     bg.addComponent<SpriteComponent>("assets/bg.png");
     bg.addGroup(groupMap);
+    bg.addGroup(groupBg);
     bg.addGroup(groupSlide);
     bgg.addComponent<TransformComponent>(960, 0, 960, 640, 1);
     bgg.addComponent<SpriteComponent>("assets/bg.png");
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
+    bgg.addGroup(groupBg);
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
@@ -189,11 +210,11 @@ void Game::handleEvents()
     SDL_PollEvent(&event);
     startCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), startbutton.getComponent<ColliderComponent>());
     endCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), endbutton.getComponent<ColliderComponent>());
+    lCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), lbutton.getComponent<ColliderComponent>());
     switch (event.type)
     {
     case SDL_QUIT:
         isRunning = false;
-        Score::inputScore();
         Score::addScore(currentScore, name);
         break;
     case SDL_KEYUP:
@@ -218,31 +239,48 @@ void Game::handleEvents()
     case SDL_MOUSEBUTTONDOWN:
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
-            if (startCursorCollision)
+            if (!inLeaderboard)
             {
-                majhkhanerstart = 1;
-                startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart2);
-            }
-            if (endCursorCollision)
-            {
-                majhkhanerend = 1;
-                endbutton.getComponent<SpriteComponent>().setTexfromTex(whitend2);
+                if (startCursorCollision)
+                {
+                    majhkhanerstart = 1;
+                    startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart2);
+                }
+                if (endCursorCollision)
+                {
+                    majhkhanerend = 1;
+                    endbutton.getComponent<SpriteComponent>().setTexfromTex(whitend2);
+                }
+                if (lCursorCollision)
+                {
+                    majhkhanerl = 1;
+                    lbutton.getComponent<SpriteComponent>().setTexfromTex(whitel2);
+                }
             }
         }
         break;
     case SDL_MOUSEBUTTONUP:
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
-            if (startCursorCollision)
-                setMenu();
-            else if (endCursorCollision)
-            {
-                isRunning = false;
-                Score::inputScore();
-                Score::addScore(currentScore, name);
-            }
+            if (inLeaderboard)
+                inLeaderboard = 0;
             else
-                majhkhanerend = majhkhanerstart = 0;
+            {
+                if (startCursorCollision)
+                    setMenu();
+                else if (endCursorCollision)
+                {
+                    isRunning = false;
+                    Score::inputScore();
+                    Score::addScore(currentScore, name);
+                }
+                else if (lCursorCollision)
+                {
+                    inLeaderboard ^= 1;
+                }
+                else
+                    majhkhanerend = majhkhanerstart = majhkhanerl = 0;
+            }
         }
     default:
         break;
@@ -256,6 +294,11 @@ void Game::handleEvents()
         endbutton.getComponent<SpriteComponent>().setTexfromTex(whitend1);
     else if (!majhkhanerend)
         endbutton.getComponent<SpriteComponent>().setTexfromTex(brownend);
+
+    if (!majhkhanerl && lCursorCollision)
+        lbutton.getComponent<SpriteComponent>().setTexfromTex(whitel1);
+    else if (!majhkhanerl)
+        lbutton.getComponent<SpriteComponent>().setTexfromTex(brownl);
 }
 void Game::update()
 {
@@ -306,14 +349,36 @@ void Game::render()
         if (inLeaderboard)
         {
             leaderboard.draw();
+            int level = 135;
+            vector<pair<int, string>> v = Score::topFive();
+            cout << v.size() << endl;
+            for (int i = 0; i < v.size(); i++, level += 90)
+            {
+                nameTex = TextureManager::CreateTextTexture(font, to_string(i + 1) + ". " + v[i].second);
+                scoreTex = TextureManager::CreateTextTexture(font, to_string(v[i].first));
+                src.x = src.y = 0;
+                dest.x = 170;
+                dest.y = level;
+                dest.w = 100 / 3 * (int)(3 + v[i].second.size());
+                dest.h = 90 / 3 * 2;
+                src.w = 1000;
+                src.h = 900;
+                TextureManager::Draw(nameTex, src, dest);
+                dest.x = 630;
+                dest.w = 100 / 3 * (int)(log10(v[i].first) + 1);
+                TextureManager::Draw(scoreTex, src, dest);
+                SDL_DestroyTexture(nameTex);
+                SDL_DestroyTexture(scoreTex);
+            }
         }
         else
         {
             menu.draw();
             startbutton.draw();
+            lbutton.draw();
             endbutton.draw();
-            cursor.draw();
         }
+        cursor.draw();
     }
     else
     {
@@ -353,13 +418,15 @@ void Game::clean()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(brownstart);
-    SDL_DestroyTexture(brownstart);
     SDL_DestroyTexture(brownend);
     SDL_DestroyTexture(whitend1);
     SDL_DestroyTexture(whitend2);
+    SDL_DestroyTexture(brownstart);
     SDL_DestroyTexture(whitestart1);
     SDL_DestroyTexture(whitestart2);
+    SDL_DestroyTexture(brownl);
+    SDL_DestroyTexture(whitel1);
+    SDL_DestroyTexture(whitel2);
     SDL_DestroyTexture(tempTex);
     Mix_FreeMusic(bgm);
     Mix_CloseAudio();

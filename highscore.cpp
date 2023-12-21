@@ -14,6 +14,7 @@ void Score::reCalculate()
         scorefile << it.first << ' ' << it.second << endl;
     }
     scorefile.close();
+
 }
 void Score::addScore(int score, const string &name)
 {
@@ -32,4 +33,13 @@ void Score::inputScore()
         scoreVector.push_back({score, name});
     }
     scorefile.close();
+}
+
+vector<pair<int, string>> Score::topFive(){
+    vector<pair<int, string>> v;
+    for (int i = 0; i < min((int)scoreVector.size(), 5); i++)
+    {
+        v.push_back(scoreVector[i]);
+    }
+    return v;
 }
