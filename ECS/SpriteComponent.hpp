@@ -20,6 +20,7 @@ public:
     float angle = 0, prevAngle = 0;
     double x;
     double matir_y, jiniser_y;
+    double torque = 0;
     std::map<const char *, Animation> animations;
     void setTex(const char *path)
     {
@@ -76,23 +77,22 @@ public:
         {
             x = bgTransform->position.x + 480;
             matir_y = 2 * 1000000 / (x * x + 10000);
-            jiniser_y = transform->position.y;
+            jiniser_y = bgTransform->position.y;
+            prevAngle = angle;
+            // prevAngle += (0 - angle) / 100;
+            prevAngle += torque;
+            torque = 0;
+            x += 32.5;
             angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
             angle *= 180 / 3.1416;
-            cout << angle << endl;
         }
         if (animated == 1)
-        {
             srcRect.x = srcRect.w * static_cast<int>(((SDL_GetTicks() / speed) % frames));
-        }
         if (animated == 2)
-        {
             srcRect.x = srcRect.w * static_cast<int>((int)(transform->position.x * .5) % frames);
-        }
         if (animated == 3)
-        {
             srcRect.x = srcRect.w * static_cast<int>((((int)(-bgTransform->position.x * .5) % frames) + frames) % frames);
-        }
+
         srcRect.y = animIndex * transform->height;
         destRect.x = (int)transform->position.x;
         destRect.y = (int)transform->position.y;
@@ -101,17 +101,15 @@ public:
     {
         if (animated == 3)
         {
+            if (abs(jiniser_y - matir_y) > .2)
+                angle = prevAngle;
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }
         else
             TextureManager::Draw(texture, srcRect, destRect);
     }
-
     void play(const char *animName)
     {
-        // cout << animations["Walk"].frames << endl;
-        // cout << animName << endl;
-        // cout << frames + 100 << endl;
         frames = animations[animName].frames;
         animIndex = animations[animName].index;
         speed = animations[animName].speed;

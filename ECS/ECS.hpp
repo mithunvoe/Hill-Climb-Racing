@@ -46,14 +46,14 @@ public:
 class Entity
 {
 private:
+
+public:
     Manager &manager;
     bool active = true;
     vector<unique_ptr<Component>> components;
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
     GroupBitSet groupBitSet;
-
-public:
     Entity(Manager &mManager) : manager(mManager) {}
 
     void update()

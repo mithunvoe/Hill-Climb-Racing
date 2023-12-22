@@ -29,45 +29,62 @@ public:
             double x = bgtrans->position.x + 480;
             double matir_y = 2 * 1000000 / (x * x + 10000);
             double jiniser_y = transform->position.y;
-            double v = .5 / 10, g = .01 / 5;
+            double v = .5 / 10, g = .01;
             angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
-            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
 
+            cout << transform->velocity.y << endl;
             if (jiniser_y > matir_y + .1)
+            {
                 transform->velocity.y -= g;
+            }
             else if (jiniser_y < matir_y - .1)
             {
-                transform->velocity.y = 0;
+                if (transform->velocity.y < 0)
+                    transform->velocity.y = 0;
                 transform->position.y = matir_y;
+                cout << abs(jiniser_y - matir_y) << endl;
             }
-            else
-                transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
 
+            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
             if (Game::event.type == SDL_KEYDOWN)
             {
                 switch (Game::event.key.keysym.sym)
                 {
                 case SDLK_RIGHT:
-                    transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    if (jiniser_y > matir_y + .1)
+                    {
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -10;
+                    }
+                    else
+                    {
+                        transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    }
                     Game::currentFuel -= 0.25;
-
                     break;
                 case SDLK_LEFT:
-                    transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    if (jiniser_y > matir_y + .1)
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
+                    else
+                    {
+                        transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    }
                     Game::currentFuel -= 0.25;
                     break;
                 case SDLK_SPACE:
-                    transform->velocity /= Vector2D(1.5, 1.5);
+                    if (abs(jiniser_y - matir_y) < 1)
+                        transform->velocity /= Vector2D(1.5, 1.5);
                     break;
 
                 default:
                     break;
                 }
             }
-            else if (abs(jiniser_y - matir_y) < .2)
+            else if (abs(jiniser_y - matir_y) < 1)
             {
                 transform->velocity /= Vector2D(1.001, 1.001);
             }
+            else 
+                transform->velocity /= Vector2D(1.0001, 1.0001);
         }
     }
 

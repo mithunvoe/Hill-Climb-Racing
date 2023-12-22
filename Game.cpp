@@ -97,7 +97,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     SDL_Init(SDL_INIT_EVERYTHING);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-    bgm = Mix_LoadMUS("assets/bgm.mp3");
+    // bgm = Mix_LoadMUS("assets/bgm.mp3");
     coinSound = Mix_LoadWAV("assets/coin.wav");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
