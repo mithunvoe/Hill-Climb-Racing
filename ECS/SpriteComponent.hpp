@@ -9,12 +9,12 @@ class SpriteComponent : public Component
 private:
     TransformComponent *transform;
     TransformComponent *bgTransform = nullptr;
-    SDL_Texture *texture;
     int animated = 0;
     int frames = 0;
     int speed = 100;
 
 public:
+    SDL_Texture *texture;
     int animIndex = 0;
     SDL_Rect srcRect, destRect;
     float angle = 0, prevAngle = 0;

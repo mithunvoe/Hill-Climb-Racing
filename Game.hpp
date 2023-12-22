@@ -25,6 +25,7 @@ public:
     static void AddTile(int id, int x, int y, int w, int h);
     static bool inMenu ;
     bool musicOn = 1;
+    static bool isHill , previsHill;
     bool inLeaderboard = 0;
     void setMenu();
     bool running() { return isRunning; };
