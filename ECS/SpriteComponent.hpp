@@ -83,7 +83,7 @@ public:
             prevAngle += torque;
             torque = 0;
             x += 32.5;
-            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+            angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
             angle *= 180 / 3.1416;
         }
         if (animated == 1)
