@@ -4,7 +4,7 @@ OBJS = $(name).cpp
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = $(name)
 
-LINKER_OBJ = TextureManager.cpp Game.cpp GameObject.cpp Vector2D.cpp Collision.cpp highscore.cpp ECS/ECS.cpp ECS/Component.hpp 
+LINKER_OBJ = TextureManager.cpp Game.cpp  Vector2D.cpp Collision.cpp highscore.cpp ECS/ECS.cpp ECS/Component.hpp 
 #CC specifies which compiler we're using
 CC = g++
 

@@ -106,7 +106,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
-    // mapObject = new Map();
     Mix_PlayMusic(bgm, -1);
     Score::inputScore();
 
