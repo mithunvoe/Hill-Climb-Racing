@@ -8,7 +8,7 @@ class SpriteComponent : public Component
 {
 private:
     TransformComponent *transform;
-    TransformComponent *bgTransform;
+    TransformComponent *bgTransform = nullptr;
     SDL_Texture *texture;
     int animated = 0;
     int frames = 0;
@@ -17,6 +17,7 @@ private:
 public:
     int animIndex = 0;
     SDL_Rect srcRect, destRect;
+    float angle = 0;
     std::map<const char *, Animation> animations;
     void setTex(const char *path)
     {
@@ -69,7 +70,15 @@ public:
     }
     void update() override
     {
-        // cout << animated << ". ";
+        if (bgTransform != nullptr)
+        {
+            double x = bgTransform->position.x + 480;
+            // double matir_y = 2 * 1000000 / (x * x + 10000);
+            // double jiniser_y = transform->position.y;
+            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+            angle *= 180 / 3.1416;
+            cout << angle << endl;
+        }
         if (animated == 1)
         {
             srcRect.x = srcRect.w * static_cast<int>(((SDL_GetTicks() / speed) % frames));
@@ -80,7 +89,7 @@ public:
         }
         if (animated == 3)
         {
-            srcRect.x = srcRect.w * static_cast<int>((((int)(-bgTransform->position.x * .5) % frames)+frames)%frames);
+            srcRect.x = srcRect.w * static_cast<int>((((int)(-bgTransform->position.x * .5) % frames) + frames) % frames);
         }
         srcRect.y = animIndex * transform->height;
         destRect.x = (int)transform->position.x;
@@ -88,7 +97,10 @@ public:
     }
     void draw() override
     {
-        TextureManager::Draw(texture, srcRect, destRect);
+        if (animated == 3)
+            TextureManager::DrawGari(texture, srcRect, destRect, angle);
+        else
+            TextureManager::Draw(texture, srcRect, destRect);
     }
 
     void play(const char *animName)

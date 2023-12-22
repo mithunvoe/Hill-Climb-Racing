@@ -31,7 +31,7 @@ public:
             double jiniser_y = transform->position.y;
             double v = .5 / 10, g = .01 / 5;
             angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
-            cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
+            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
 
             if (jiniser_y > matir_y + .1)
                 transform->velocity.y -= g;
@@ -56,12 +56,6 @@ public:
                     transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     Game::currentFuel -= 0.25;
                     break;
-                // case SDLK_UP:
-                //     transform->position.y -= 1;
-                //     break;
-                // case SDLK_DOWN:
-                //     transform->position.y += 1;
-                //     break;
                 case SDLK_SPACE:
                     transform->velocity /= Vector2D(1.5, 1.5);
                     break;

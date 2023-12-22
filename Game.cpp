@@ -157,11 +157,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
 
-    sky.addComponent<TransformComponent>(0, -640+151, 960, 640, 1);
-    // sky.addComponent<SpriteComponent>("assets/sky.png");
+    sky.addComponent<TransformComponent>(0, -640 + 151, 960, 640, 1);
+    sky.addComponent<SpriteComponent>("assets/sky.png");
     sky.addGroup(groupMap);
     sky.addGroup(groupBg);
-    // sky.addGroup(groupSlide);
+    sky.addGroup(groupSlide);
     skyy.addComponent<TransformComponent>(0, -640 + 151, 960, 640, 1);
     // skyy.addComponent<SpriteComponent>("assets/sky.png");
     skyy.addGroup(groupMap);
@@ -178,19 +178,15 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
     scoreCoin.addGroup(groupMap);
 
-    fuelBorder.addComponent<TransformComponent>(666 + 5, 41 + 4, 210, 35, 0.988);
-    fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
-    fuelBorder.addGroup(groupPlayers);
-    // fuelBorder.getComponent<TransformComponent>().entity.
-    // fuelBorder.getComponent<TransformComponent>().;
-    // fuelBorder.getComponent<TransformComponent>().width=200;
-
     fuel.addComponent<TransformComponent>(870, 14, 2068, 2072, 0.04);
     fuel.addComponent<SpriteComponent>("assets/fuel.png");
     fuel.addGroup(groupMap);
 
+    fuelBorder.addComponent<TransformComponent>(666 + 5, 41 + 4, 210, 35, 0.988);
+    fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
+
     gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .2);
-    gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
+    gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bg.getComponent<TransformComponent>());
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
 
@@ -444,8 +440,10 @@ void Game::render()
         src.w = 1200;
         src.h = 150;
         TextureManager::Draw(fuelbarTex, src, dest);
-        for (auto &p : players)
-            p->draw();
+        fuelBorder.draw();
+        gari.draw();
+        // for (auto &p : players)
+        //     p->draw();
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }
