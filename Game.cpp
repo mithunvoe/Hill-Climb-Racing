@@ -8,8 +8,8 @@
 
 double Game::currentFuel = 1000.0;
 bool Game::inMenu = 1;
-bool Game::isHill=0;
-bool Game::previsHill=0;
+bool Game::isHill = 0;
+bool Game::previsHill = 0;
 Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
@@ -340,7 +340,7 @@ void Game::update()
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
         bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
-    previsHill=isHill;
+        previsHill = isHill;
         isHill = (bool)(rand() & 1);
 
         if (!isHill)
@@ -369,29 +369,20 @@ void Game::update()
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
-        if (!isHill)
-        {
-            bg.addComponent<SpriteComponent>("assets/bgwohill.png");
-            // bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
-        }
-        else
-        {
-            bg.addComponent<SpriteComponent>("assets/bg.png");
-            // bgg.addComponent<SpriteComponent>("assets/bg.png");
-        }
+        bgg.addComponent<SpriteComponent>().setTexfromTex(bg.getComponent<SpriteComponent>().texture);
         isHill = (bool)(rand() & 1);
+        previsHill = isHill;
 
         if (!isHill)
         {
+            // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
             bg.addComponent<SpriteComponent>("assets/bgwohill.png");
-            bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
         }
         else
         {
+            // bg.addComponent<SpriteComponent>("assets/bg.png");
             bg.addComponent<SpriteComponent>("assets/bg.png");
-            bgg.addComponent<SpriteComponent>("assets/bg.png");
         }
-
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
         sky.getComponent<TransformComponent>().position.x = -960;
