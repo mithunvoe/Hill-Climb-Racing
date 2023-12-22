@@ -176,7 +176,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     fuel.addComponent<SpriteComponent>("assets/fuel.png");
     fuel.addGroup(groupMap);
 
-    gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .4);
+    gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .2);
     gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bgg.getComponent<TransformComponent>());
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
