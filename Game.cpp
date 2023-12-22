@@ -1,7 +1,7 @@
 #include "Game.hpp"
-#include "Map.hpp"
+// #include "Map.hpp"
 #include "ECS/Component.hpp"
-#include "GameObject.hpp"
+// #include "GameObject.hpp"
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 #include "highscore.hpp"
@@ -10,7 +10,7 @@ double Game::currentFuel = 1000.0;
 bool Game::inMenu = 1;
 bool Game::isHill = 0;
 bool Game::previsHill = 0;
-Map *mapObject;
+// Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
 SDL_Event Game::event;
@@ -106,7 +106,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
-    mapObject = new Map();
+    // mapObject = new Map();
     Mix_PlayMusic(bgm, -1);
     Score::inputScore();
 
@@ -162,16 +162,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     sky.addComponent<TransformComponent>(0, -1920 + 250, 1920, 1920, 1);
     sky.addComponent<SpriteComponent>("assets/sky.png");
-    // sky.addGroup(groupMap);
-    // sky.addGroup(groupBg);
-    // sky.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
-    // sky.addGroup(groupSlide);
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
-
-    // swap(bg, bgg);
-    // bgg=bg;
 
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
@@ -345,24 +338,12 @@ void Game::update()
 
         if (!isHill)
         {
-            // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
             bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
         }
         else
         {
-            // bg.addComponent<SpriteComponent>("assets/bg.png");
             bgg.addComponent<SpriteComponent>("assets/bg.png");
         }
-        // if (!isHill)
-        // {
-        //     // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
-        //     bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
-        // }
-        // else
-        // {
-        //     // bg.addComponent<SpriteComponent>("assets/bg.png");
-        //     bgg.addComponent<SpriteComponent>("assets/bg.png");
-        // }
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
@@ -477,8 +458,6 @@ void Game::render()
         TextureManager::Draw(fuelbarTex, src, dest);
         fuelBorder.draw();
         gari.draw();
-        // for (auto &p : players)
-        //     p->draw();
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }
@@ -503,7 +482,4 @@ void Game::clean()
     Mix_CloseAudio();
     SDL_Quit();
     printf("Game Cleaned\nScore: %d\n", currentScore);
-}
-void Game::AddTile(int id, int x, int y, int w, int h)
-{
 }

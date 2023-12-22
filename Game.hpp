@@ -22,7 +22,6 @@ public:
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;
-    static void AddTile(int id, int x, int y, int w, int h);
     static bool inMenu ;
     bool musicOn = 1;
     static bool isHill , previsHill;
