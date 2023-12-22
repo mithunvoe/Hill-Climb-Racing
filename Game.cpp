@@ -66,6 +66,8 @@ auto &fuelBorder(manager.addEntity());
 auto &musicButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
 auto &lbutton(manager.addEntity());
+auto &sky(manager.addEntity());
+auto &skyy(manager.addEntity());
 
 Entity *coin[10];
 enum groupLabels : size_t
@@ -154,6 +156,17 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
+
+    sky.addComponent<TransformComponent>(0, -640+151, 960, 640, 1);
+    // sky.addComponent<SpriteComponent>("assets/sky.png");
+    sky.addGroup(groupMap);
+    sky.addGroup(groupBg);
+    // sky.addGroup(groupSlide);
+    skyy.addComponent<TransformComponent>(0, -640 + 151, 960, 640, 1);
+    // skyy.addComponent<SpriteComponent>("assets/sky.png");
+    skyy.addGroup(groupMap);
+    skyy.addGroup(groupBg);
+    // skyy.addGroup(groupSlide);
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
@@ -333,11 +346,15 @@ void Game::update()
     {
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
+        sky.getComponent<TransformComponent>().position.x = 0;
+        skyy.getComponent<TransformComponent>().position.x = 960;
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
+        sky.getComponent<TransformComponent>().position.x = -960;
+        skyy.getComponent<TransformComponent>().position.x = 0;
     }
 
     // cout<<bg.getComponent<TransformComponent>().position.x<<endl;
@@ -403,6 +420,7 @@ void Game::render()
     }
     else
     {
+        // sky.draw();
         src.x = src.y = 0;
         dest.x = 85;
         dest.y = 15;
