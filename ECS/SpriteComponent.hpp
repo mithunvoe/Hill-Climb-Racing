@@ -17,7 +17,9 @@ private:
 public:
     int animIndex = 0;
     SDL_Rect srcRect, destRect;
-    float angle = 0;
+    float angle = 0, prevAngle = 0;
+    double x;
+    double matir_y, jiniser_y;
     std::map<const char *, Animation> animations;
     void setTex(const char *path)
     {
@@ -72,12 +74,15 @@ public:
     {
         if (bgTransform != nullptr)
         {
-            double x = bgTransform->position.x + 480;
-            // double matir_y = 2 * 1000000 / (x * x + 10000);
-            // double jiniser_y = transform->position.y;
-            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
-            angle *= 180 / 3.1416;
-            cout << angle << endl;
+            x = bgTransform->position.x + 480;
+            matir_y = 2 * 1000000 / (x * x + 10000);
+            jiniser_y = transform->position.y;
+            if (abs(matir_y - jiniser_y) < .2)
+            {
+                angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+                angle *= 180 / 3.1416;
+                cout << angle << endl;
+            }
         }
         if (animated == 1)
         {
@@ -98,7 +103,9 @@ public:
     void draw() override
     {
         if (animated == 3)
+        {
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
+        }
         else
             TextureManager::Draw(texture, srcRect, destRect);
     }
