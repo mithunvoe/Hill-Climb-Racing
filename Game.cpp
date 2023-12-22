@@ -391,7 +391,7 @@ void Game::render()
                 src.h = 900;
                 TextureManager::Draw(nameTex, src, dest);
                 dest.x = 620;
-                dest.w = 100 / 3.5 * (int)(log10(v[i].first) + 1);
+                dest.w = 100 / 3.5 * (int)(v[i].first?log10(v[i].first)+1:0 + 1);
                 TextureManager::Draw(scoreTex, src, dest);
                 SDL_DestroyTexture(nameTex);
                 SDL_DestroyTexture(scoreTex);
@@ -413,7 +413,7 @@ void Game::render()
         src.x = src.y = 0;
         dest.x = 85;
         dest.y = 15;
-        dest.w = 100 / 3 * (int)(log10(currentScore) + 1);
+        dest.w = 100 / 3 * (int)(currentScore?log10(currentScore)+1:0 + 1);
         dest.h = 90 / 3 * 2;
         src.w = 1000;
         src.h = 900;
