@@ -538,6 +538,7 @@
 0 srty
 0 srty
 0 srty
+0 sg
 0 sf
 0 sf
 0 sf
@@ -2670,6 +2671,7 @@
 0 jk
 0 jk
 0 j
+0 j
 0 ghjk
 0 ghjk
 0 ghjk
@@ -2712,6 +2714,7 @@
 0 fghk
 0 fghk
 0 fghk
+0 fghjk
 0 fghfj
 0 fghfj
 0 fghfj
