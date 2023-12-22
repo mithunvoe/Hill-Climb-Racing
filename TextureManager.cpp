@@ -13,9 +13,9 @@ void TextureManager::Draw(SDL_Texture *tex, SDL_Rect src, SDL_Rect dest)
     SDL_RenderCopy(Game::renderer, tex, &src, &dest);
 }
 
-SDL_Texture *TextureManager::CreateTextTexture(TTF_Font *font, string text)
+SDL_Texture *TextureManager::CreateTextTexture(TTF_Font *font, string text,int r, int g, int b )
 {
-    SDL_Surface *tmpSurface = TTF_RenderText_Solid(font, text.c_str(), {83, 51, 44});
+    SDL_Surface *tmpSurface = TTF_RenderText_Solid(font, text.c_str(), {r, g, b});
     if (tmpSurface == NULL)
     {
         cout << "surface error" ;

@@ -282,7 +282,7 @@ void Game::handleEvents()
                 break;
             }
             if (inLeaderboard)
-                inLeaderboard = 0;
+                inLeaderboard = majhkhanerl = 0;
             else
             {
                 if (startCursorCollision)
@@ -369,23 +369,23 @@ void Game::render()
         if (inLeaderboard)
         {
             leaderboard.draw();
-            int level = 135;
+            int level = 155;
             vector<pair<int, string>> v = Score::topFive();
-            cout << v.size() << endl;
-            for (int i = 0; i < v.size(); i++, level += 90)
+            // cout << v.size() << endl;
+            for (int i = 0; i < v.size(); i++, level += 80)
             {
-                nameTex = TextureManager::CreateTextTexture(font, to_string(i + 1) + ". " + v[i].second);
-                scoreTex = TextureManager::CreateTextTexture(font, to_string(v[i].first));
+                nameTex = TextureManager::CreateTextTexture(font, to_string(i + 1) + ". " + v[i].second, 255, 225, 134);
+                scoreTex = TextureManager::CreateTextTexture(font, to_string(v[i].first), 255, 225, 134);
                 src.x = src.y = 0;
-                dest.x = 170;
+                dest.x = 200;
                 dest.y = level;
-                dest.w = 100 / 3 * (int)(3 + v[i].second.size());
+                dest.w = 100 / 3.5 * (int)(3 + v[i].second.size());
                 dest.h = 90 / 3 * 2;
                 src.w = 1000;
                 src.h = 900;
                 TextureManager::Draw(nameTex, src, dest);
-                dest.x = 630;
-                dest.w = 100 / 3 * (int)(log10(v[i].first) + 1);
+                dest.x = 620;
+                dest.w = 100 / 3.5 * (int)(log10(v[i].first) + 1);
                 TextureManager::Draw(scoreTex, src, dest);
                 SDL_DestroyTexture(nameTex);
                 SDL_DestroyTexture(scoreTex);
@@ -410,7 +410,7 @@ void Game::render()
         dest.h = 90 / 3 * 2;
         src.w = 1000;
         src.h = 900;
-        tempTex = TextureManager::CreateTextTexture(Game::font, to_string(currentScore));
+        tempTex = TextureManager::CreateTextTexture(Game::font, to_string(currentScore), 83, 51, 44);
         // fuelTex = TextureManager::CreateTextTexture(Game::font, to_string(currentFuel));
         fuelbarTex = TextureManager::loadTexture("assets/fuelbar.png");
         for (auto &t : tiles)
