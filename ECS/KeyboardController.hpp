@@ -1,4 +1,3 @@
-
 #ifndef kb_hpp
 #define kb_hpp
 
@@ -26,12 +25,12 @@ public:
     {
         if (!Game::inMenu)
         {
-            double x = bgtrans->position.x + 480;
-            double matir_y = Game::previsHill ? 2 * 1000000 / (x * x + 10000) : 0;
-            double jiniser_y = transform->position.y;
             double v = .5 / 10, g = .01 / 5;
+            double x = bgtrans->position.x + 480;
+            double matir_y = Game::previsHill ? 2 * 1000000 / (x * x + 10000) : 10;
+            double jiniser_y = transform->position.y;
             angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
-            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
+            cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
 
             cout << transform->velocity.y << endl;
             if (jiniser_y > matir_y + .1)
@@ -43,9 +42,7 @@ public:
                 if (transform->velocity.y < 0)
                     transform->velocity.y = 0;
                 transform->position.y = matir_y;
-                cout << abs(jiniser_y - matir_y) << endl;
             }
-
             transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
             if (Game::event.type == SDL_KEYDOWN)
             {
@@ -84,7 +81,7 @@ public:
             {
                 transform->velocity /= Vector2D(1.001, 1.001);
             }
-            else 
+            else
                 transform->velocity /= Vector2D(1.0001, 1.0001);
         }
     }
