@@ -33,6 +33,8 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY)
     //     }
     // }
 
+    //fdghgfh
+
     char tile;
     std::fstream mapFile;
     mapFile.open(path);
