@@ -9,12 +9,12 @@ class SpriteComponent : public Component
 private:
     TransformComponent *transform;
     TransformComponent *bgTransform = nullptr;
-    SDL_Texture *texture;
     int animated = 0;
     int frames = 0;
     int speed = 100;
 
 public:
+    SDL_Texture *texture;
     int animIndex = 0;
     SDL_Rect srcRect, destRect;
     float angle = 0;
@@ -75,9 +75,10 @@ public:
             double x = bgTransform->position.x + 480;
             // double matir_y = 2 * 1000000 / (x * x + 10000);
             // double jiniser_y = transform->position.y;
-            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+            angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
+
             angle *= 180 / 3.1416;
-            cout << angle << endl;
+            // cout << angle << endl;
         }
         if (animated == 1)
         {

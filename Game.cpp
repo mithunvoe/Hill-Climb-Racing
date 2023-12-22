@@ -8,6 +8,8 @@
 
 double Game::currentFuel = 1000.0;
 bool Game::inMenu = 1;
+bool Game::isHill=0;
+bool Game::previsHill=0;
 Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
@@ -29,6 +31,8 @@ SDL_Texture *musicoffTex;
 SDL_Texture *leaderboardTex;
 SDL_Texture *nameTex;
 SDL_Texture *scoreTex;
+SDL_Texture *bgwoHill;
+
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -67,7 +71,7 @@ auto &musicButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
 auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
-// 
+//
 Entity *coin[10];
 enum groupLabels : size_t
 {
@@ -146,12 +150,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     musicButton.addComponent<ColliderComponent>("mbutton");
 
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
-    bg.addComponent<SpriteComponent>("assets/bg.png");
+    bg.addComponent<SpriteComponent>("assets/bgwohill.png");
     bg.addGroup(groupMap);
     bg.addGroup(groupBg);
     bg.addGroup(groupSlide);
     bgg.addComponent<TransformComponent>(960, 0, 960, 640, 1);
-    bgg.addComponent<SpriteComponent>("assets/bg.png");
+    bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
@@ -326,7 +330,7 @@ void Game::handleEvents()
 }
 void Game::update()
 {
-
+    // cout<<isHill<<endl;
     manager.refresh();
     manager.update();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
@@ -335,12 +339,59 @@ void Game::update()
     }
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
+        bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
+    previsHill=isHill;
+        isHill = (bool)(rand() & 1);
+
+        if (!isHill)
+        {
+            // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+            bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
+        }
+        else
+        {
+            // bg.addComponent<SpriteComponent>("assets/bg.png");
+            bgg.addComponent<SpriteComponent>("assets/bg.png");
+        }
+        // if (!isHill)
+        // {
+        //     // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+        //     bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
+        // }
+        // else
+        // {
+        //     // bg.addComponent<SpriteComponent>("assets/bg.png");
+        //     bgg.addComponent<SpriteComponent>("assets/bg.png");
+        // }
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
+        if (!isHill)
+        {
+            bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+            // bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
+        }
+        else
+        {
+            bg.addComponent<SpriteComponent>("assets/bg.png");
+            // bgg.addComponent<SpriteComponent>("assets/bg.png");
+        }
+        isHill = (bool)(rand() & 1);
+
+        if (!isHill)
+        {
+            bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+            bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
+        }
+        else
+        {
+            bg.addComponent<SpriteComponent>("assets/bg.png");
+            bgg.addComponent<SpriteComponent>("assets/bg.png");
+        }
+
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
         sky.getComponent<TransformComponent>().position.x = -960;
@@ -391,7 +442,7 @@ void Game::render()
                 src.h = 900;
                 TextureManager::Draw(nameTex, src, dest);
                 dest.x = 620;
-                dest.w = 100 / 3.5 * (int)(v[i].first?log10(v[i].first)+1:0 + 1);
+                dest.w = 100 / 3.5 * (int)(v[i].first ? log10(v[i].first) + 1 : 0 + 1);
                 TextureManager::Draw(scoreTex, src, dest);
                 SDL_DestroyTexture(nameTex);
                 SDL_DestroyTexture(scoreTex);
@@ -413,7 +464,7 @@ void Game::render()
         src.x = src.y = 0;
         dest.x = 85;
         dest.y = 15;
-        dest.w = 100 / 3 * (int)(currentScore?log10(currentScore)+1:0 + 1);
+        dest.w = 100 / 3 * (int)(currentScore ? log10(currentScore) + 1 : 0 + 1);
         dest.h = 90 / 3 * 2;
         src.w = 1000;
         src.h = 900;

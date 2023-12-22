@@ -27,10 +27,10 @@ public:
         if (!Game::inMenu)
         {
             double x = bgtrans->position.x + 480;
-            double matir_y = 2 * 1000000 / (x * x + 10000);
+            double matir_y = Game::previsHill ? 2 * 1000000 / (x * x + 10000) : 0;
             double jiniser_y = transform->position.y;
             double v = .5 / 10, g = .01 / 5;
-            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+            angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
             // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
 
             if (jiniser_y > matir_y + .1)
