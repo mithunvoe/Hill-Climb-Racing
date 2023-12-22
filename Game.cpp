@@ -192,7 +192,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         coin[i]->addGroup(groupSlide);
     }
     for (auto &it : manager.getGroup(groupSlide))
-        it->addComponent<KeyboardController>();
+        it->addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
     TTF_Init();
     Game::font = TTF_OpenFont("assets/fnt.ttf", 200);
 }

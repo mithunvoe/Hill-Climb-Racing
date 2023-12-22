@@ -10,8 +10,13 @@ class KeyboardController : public Component
 {
 private:
 public:
-    TransformComponent *transform;
+    TransformComponent *transform, *bgtrans;
     SpriteComponent *sprite;
+    double angle, ground;
+    KeyboardController(TransformComponent &hehe)
+    {
+        bgtrans = &hehe;
+    }
     void init() override
     {
         transform = &entity->getComponent<TransformComponent>();
@@ -19,39 +24,56 @@ public:
     }
     void update() override
     {
-
-        if (Game::event.type == SDL_KEYDOWN && !Game::inMenu)
+        if (!Game::inMenu)
         {
-            switch (Game::event.key.keysym.sym)
+            double x = bgtrans->position.x +480;
+            double matir_y = 160000000000 / (x * x * x * x + 1600000000);
+            double jiniser_y = transform->position.y;
+            double v = .5, g = .01;
+            angle = atan((640000000000 * x * x * x) / ((x * x * x * x + 1600000000) * (x * x * x * x + 1600000000)));
+            cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "    function: " << matir_y << endl;
+
+            if (jiniser_y > matir_y+.1)
+                transform->velocity.y -= g;
+            else if (jiniser_y < matir_y-.1)
             {
-            case SDLK_RIGHT:
-                transform->velocity += Vector2D(-.2, 0);
-
-                Game::currentFuel -= 0.25;
-
-                break;
-            case SDLK_LEFT:
-                transform->velocity += Vector2D(.2, 0);
-                Game::currentFuel -= 0.25;
-
-                break;
-            case SDLK_UP:
-                transform->position.y -= 1;
-                break;
-            case SDLK_DOWN:
-                transform->position.y += 1;
-                break;
-            case SDLK_SPACE:
-                transform->velocity /= Vector2D(1.5, 1.5);
-                break;
-
-            default:
-                break;
+                transform->velocity.y = 0;
+                transform->position.y = matir_y;
             }
-        }
-        else if (abs(transform->velocity.x) > 0.00001)
-        {
-            transform->velocity /= Vector2D(1.01, 1.01);
+            else
+                transform->velocity += Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
+
+            if (Game::event.type == SDL_KEYDOWN)
+            {
+                switch (Game::event.key.keysym.sym)
+                {
+                case SDLK_RIGHT:
+                    transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    Game::currentFuel -= 0.25;
+
+                    break;
+                case SDLK_LEFT:
+                    transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                    Game::currentFuel -= 0.25;
+                    break;
+                // case SDLK_UP:
+                //     transform->position.y -= 1;
+                //     break;
+                // case SDLK_DOWN:
+                //     transform->position.y += 1;
+                //     break;
+                case SDLK_SPACE:
+                    transform->velocity /= Vector2D(1.5, 1.5);
+                    break;
+
+                default:
+                    break;
+                }
+            }
+            else if (abs(jiniser_y - matir_y) < .2)
+            {
+                transform->velocity /= Vector2D(1.01, 1.01);
+            }
         }
     }
 
