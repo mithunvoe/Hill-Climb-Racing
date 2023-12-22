@@ -77,12 +77,9 @@ public:
             x = bgTransform->position.x + 480;
             matir_y = 2 * 1000000 / (x * x + 10000);
             jiniser_y = transform->position.y;
-            if (abs(matir_y - jiniser_y) < .2)
-            {
-                angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
-                angle *= 180 / 3.1416;
-                cout << angle << endl;
-            }
+            angle = atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000)));
+            angle *= 180 / 3.1416;
+            cout << angle << endl;
         }
         if (animated == 1)
         {
