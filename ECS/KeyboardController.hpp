@@ -31,7 +31,7 @@ public:
             double v = .5 / 10, g = .01 / 3;
             double x = bgtrans->position.x + 480;
             matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 8.319;
-             jiniser_y = transform->position.y;
+            jiniser_y = transform->position.y;
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
             {
                 matir_y += ground;
@@ -74,10 +74,14 @@ public:
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
                     else
                     {
-                        transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
+                        if (transform->velocity.x > 1)
+                            transform->velocity /= Vector2D(1.5, 1.5);
+                        else
+                            transform->velocity += Vector2D(.5 * v * cos(angle) * cos(angle), .5 * v * cos(angle) * sin(angle));
                     }
+
                     if (entity->getComponent<SpriteComponent>().entityName == "amibg")
-                        Game::currentFuel -= 1;
+                        Game::currentFuel -= .75;
                     break;
                 case SDLK_SPACE:
                     if (abs(jiniser_y - matir_y) < 1)
