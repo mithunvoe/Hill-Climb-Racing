@@ -247,7 +247,6 @@ void Game::gameOverFunc()
     Game::currentFuel = 1000.0;
     manager.refresh();
     manager.update();
-    isOver = 1;
     setMenu();
     SDL_RenderPresent(renderer);
     SDL_Delay(4000);
@@ -417,6 +416,11 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 
 void Game::update()
 {
+    if (isOver)
+    {
+        printf("khelashesh");
+        gameOverFunc();
+    }
     cout << currentFuel << endl;
     manager.refresh();
     manager.update();
