@@ -1,16 +1,11 @@
 #include "Game.hpp"
-// #include "Map.hpp"
 #include "ECS/Component.hpp"
-// #include "GameObject.hpp"
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 #include "highscore.hpp"
+// #include "Map.hpp"
+// #include "GameObject.hpp"
 
-double Game::currentFuel = 1000.0;
-bool Game::inMenu = 1;
-bool Game::isHill = 0;
-bool Game::previsHill = 0;
-// Map *mapObject;
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
 SDL_Event Game::event;
@@ -37,7 +32,10 @@ std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
 
-string name;
+double Game::currentFuel = 1000.0;
+bool Game::inMenu = 1;
+bool Game::isHill = 0;
+bool Game::previsHill = 0;
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
@@ -71,8 +69,10 @@ auto &musicButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
 auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
+string name;
 //
 Entity *coin[10];
+
 enum groupLabels : size_t
 {
     groupMap,
@@ -81,6 +81,7 @@ enum groupLabels : size_t
     groupSlide,
     groupBg
 };
+
 enum animLabel : int
 {
     noAnim,
@@ -88,6 +89,7 @@ enum animLabel : int
     spaceAnim,
     chakaAnim
 };
+
 Game::Game() {}
 Game::~Game() {}
 
@@ -148,6 +150,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     musicButton.addComponent<SpriteComponent>(musiconTex);
     musicButton.addComponent<ColliderComponent>("mbutton");
 
+    sky.addComponent<TransformComponent>(0, -1920 + 250, 1920, 1920, 1);
+    sky.addComponent<SpriteComponent>("assets/sky.png");
+    sky.addGroup(groupMap);
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     bg.addComponent<SpriteComponent>("assets/bgwohill.png");
     bg.addGroup(groupMap);
@@ -159,8 +164,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
 
-    sky.addComponent<TransformComponent>(0, -1920 + 250, 1920, 1920, 1);
-    sky.addComponent<SpriteComponent>("assets/sky.png");
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
@@ -355,20 +358,16 @@ void Game::update()
 
         if (!isHill)
         {
-            // bg.addComponent<SpriteComponent>("assets/bgwohill.png");
             bg.addComponent<SpriteComponent>("assets/bgwohill.png");
         }
         else
         {
-            // bg.addComponent<SpriteComponent>("assets/bg.png");
             bg.addComponent<SpriteComponent>("assets/bg.png");
         }
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
         sky.getComponent<TransformComponent>().position.x = -960;
     }
-
-    // cout<<bg.getComponent<TransformComponent>().position.x<<endl;
 
     SDL_GetMouseState(&x, &y);
     cursor.getComponent<TransformComponent>().position.x = x;
@@ -390,7 +389,6 @@ void Game::update()
 }
 void Game::render()
 {
-
     SDL_RenderClear(renderer);
     if (inMenu)
     {
@@ -431,7 +429,6 @@ void Game::render()
     }
     else
     {
-        sky.draw();
         src.x = src.y = 0;
         dest.x = 85;
         dest.y = 15;

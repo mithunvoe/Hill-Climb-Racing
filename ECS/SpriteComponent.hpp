@@ -16,6 +16,7 @@ private:
 public:
     SDL_Texture *texture;
     int animIndex = 0;
+    string entityName;
     SDL_Rect srcRect, destRect;
     float angle = 0, prevAngle = 0;
     double x;
@@ -34,6 +35,7 @@ public:
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName)
     {
         setTex(path);
+        entityName = animName;
         animated = isAnimated;
         Animation coin = Animation(0, frames, 50);
         animations.emplace(animName, coin);
@@ -42,6 +44,7 @@ public:
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName, TransformComponent &hehe)
     {
         setTex(path);
+        entityName = animName;
         animated = isAnimated;
         Animation coin = Animation(0, frames, 50);
         animations.emplace(animName, coin);

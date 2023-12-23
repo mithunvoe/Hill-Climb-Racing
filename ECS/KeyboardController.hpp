@@ -25,12 +25,12 @@ public:
     {
         if (!Game::inMenu)
         {
-            double v = .5 / 10, g = .01 ;
+            double v = .5 / 10, g = .01;
             double x = bgtrans->position.x + 480;
             double matir_y = Game::previsHill ? 2 * 1000000 / (x * x + 10000) : 10;
             double jiniser_y = transform->position.y;
-            // if (entity->getComponent<ColliderComponent>().tag == (string) "coin")
-            //     jiniser_y += 400;
+            if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
+                matir_y += 380;
             angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
             cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
 
