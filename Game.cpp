@@ -207,7 +207,7 @@ void Game::setMenu()
     majhkhanerstart = 0;
     majhkhanerend = 0;
 }
-void Game::gameOver()
+void Game::gameOverFunc()
 {
     gameover.draw();
     scoreTex = TextureManager::CreateTextTexture(font, "Score: " + to_string(currentScore), 0, 0, 0);
@@ -274,7 +274,7 @@ void Game::handleEvents()
         }
         if (event.key.keysym.sym == SDLK_g)
         {
-            gameOver();
+            gameOverFunc();
         }
         break;
     case SDL_QUIT:
@@ -397,7 +397,7 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
             y_ = -2 * 1000000 / (coinX * coinX + 10000) + 380;
         else
             y_ = 380;
-        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_ -10, 2068, 2072, 0.02);
+        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_, 2068, 2072, 0.02);
         a.addComponent<SpriteComponent>(coinTexture, noAnim, 1, "coin");
         a.getComponent<SpriteComponent>().setTexfromTex(fuelTexture);
         a.addComponent<ColliderComponent>("fuel");
@@ -412,7 +412,7 @@ void Game::update()
     manager.refresh();
     manager.update();
     if (currentFuel <= 0)
-        gameOver();
+        gameOverFunc();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
     {
         Mix_PlayChannel(-1, engine, 0);
@@ -461,6 +461,8 @@ void Game::update()
         bgg.getComponent<TransformComponent>().position.x = 0;
         sky.getComponent<TransformComponent>().position.x = -960;
     }
+    // if (abs(gari.getComponent<SpriteComponent>().angle - gari.getComponent<SpriteComponent>().prevAngle) > 30 and abs(gari.getComponent<KeyboardController>().jiniser_y - gari.getComponent<KeyboardController>().matir_y) < 1)
+    //     gameOverFunc();
 
     SDL_GetMouseState(&x, &y);
     cursor.getComponent<TransformComponent>().position.x = x;

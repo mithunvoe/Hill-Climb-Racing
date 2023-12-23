@@ -12,6 +12,8 @@ public:
     TransformComponent *transform, *bgtrans;
     SpriteComponent *sprite;
     double angle, ground;
+    double matir_y;
+    double jiniser_y;
     KeyboardController(TransformComponent &hehe)
     {
         bgtrans = &hehe;
@@ -26,10 +28,10 @@ public:
     {
         if (!Game::inMenu)
         {
-            double v = .5 / 10, g = .01/3;
+            double v = .5 / 10, g = .01 / 3;
             double x = bgtrans->position.x + 480;
-            double matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 10;
-            double jiniser_y = transform->position.y;
+            matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 8.319;
+             jiniser_y = transform->position.y;
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
             {
                 matir_y += ground;
@@ -56,7 +58,7 @@ public:
                 switch (Game::event.key.keysym.sym)
                 {
                 case SDLK_RIGHT:
-                    if (jiniser_y > matir_y + .1)
+                    if (abs(jiniser_y - matir_y) > 1)
                     {
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -10;
                     }
@@ -67,7 +69,7 @@ public:
                     Game::currentFuel -= 0.025;
                     break;
                 case SDLK_LEFT:
-                    if (jiniser_y > matir_y + .1)
+                    if (abs(jiniser_y - matir_y) > 1)
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
                     else
                     {

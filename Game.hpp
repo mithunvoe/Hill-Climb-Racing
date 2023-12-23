@@ -19,7 +19,7 @@ public:
     void update();
     void render();
     void clean();
-    void gameOver();
+    void gameOverFunc();
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;

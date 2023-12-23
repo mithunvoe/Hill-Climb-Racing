@@ -3,6 +3,7 @@
 #include "../TextureManager.hpp"
 #include "Animation.hpp"
 #include <map>
+// #include "Game.hpp"
 
 class SpriteComponent : public Component
 {
@@ -23,10 +24,6 @@ public:
     double matir_y, jiniser_y;
     double torque = 0;
     std::map<const char *, Animation> animations;
-    void setTex(const char *path)
-    {
-        texture = TextureManager::loadTexture(path);
-    }
     SpriteComponent() = default;
 
     void setTexfromTex(SDL_Texture *tex)
@@ -35,11 +32,11 @@ public:
     }
     SpriteComponent(const char *path)
     {
-        setTex(path);
+        texture = TextureManager::loadTexture(path);
     }
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName)
     {
-        setTex(path);
+        texture = TextureManager::loadTexture(path);
         entityName = animName;
         animated = isAnimated;
         Animation coin = Animation(0, frames, 50);
@@ -58,7 +55,7 @@ public:
     }
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName, TransformComponent &hehe)
     {
-        setTex(path);
+        texture = TextureManager::loadTexture(path);
         entityName = animName;
         animated = isAnimated;
         Animation coin = Animation(0, frames, 50);
@@ -74,7 +71,6 @@ public:
     {
         texture = tex;
         entityName = animName;
-        // cout<<entityName<<endl;
     }
 
     ~SpriteComponent() { SDL_DestroyTexture(texture); }
@@ -124,15 +120,16 @@ public:
     {
         if (animated == 3)
         {
-            if (abs(jiniser_y - matir_y) > 1)
+            if (abs(jiniser_y - matir_y) > 0.001)
                 angle = prevAngle;
-            // cout << angle << "......" << endl;
-
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }
         else
             TextureManager::Draw(texture, srcRect, destRect);
     }
+
+
+
     void play(const char *animName)
     {
         frames = animations[animName].frames;
