@@ -75,7 +75,7 @@ auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
 auto &gameover(manager.addEntity());
 
-string name;
+string Game::name;
 //
 // Entity *coin[10];
 
@@ -101,12 +101,15 @@ Game::~Game() {}
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
-    cout << "Enter Your Name: ";
+    // cout << "Enter Your Name: ";
     system("clear");
 
     int flags = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
-    cin >> name;
+    // cin >> name;
     SDL_Init(SDL_INIT_EVERYTHING);
+
+    // cout<<3;
+
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     bgm = Mix_LoadMUS("assets/bgm.mp3");
@@ -441,8 +444,8 @@ void Game::update()
         isHill = (bool)(rand() & 1);
         previsHill = isHill;
         if (i <= 0)
-            dq.push_front(isHill),i++;
-        if (!dq[i-1])
+            dq.push_front(isHill), i++;
+        if (!dq[i - 1])
         {
             bg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
@@ -477,7 +480,12 @@ void Game::update()
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    if (inMenu)
+    if(isNameMenu)
+    {
+        
+        takeNameInput();
+    }
+    else if (inMenu)
     {
         if (inLeaderboard)
         {
@@ -572,4 +580,46 @@ void Game::clean()
     Mix_CloseAudio();
     SDL_Quit();
     printf("Game Cleaned\nScore: %d\n", currentScore);
+}
+void Game::takeNameInput()
+{
+    SDL_StartTextInput();
+    bool running = true;
+    SDL_Event *event;
+    while (running)
+    {
+        while (SDL_PollEvent(event) != 0)
+        {
+            switch (event->type)
+            {
+            case SDL_QUIT:
+                running = false;
+                break;
+            case SDL_TEXTINPUT:
+                name += event->text.text;
+                break;
+            case SDL_KEYDOWN:
+                if (event->key.keysym.sym == SDLK_BACKSPACE && !name.empty())
+                {
+                    name.pop_back();
+                }
+                break;
+            }
+            tempTex = TextureManager::CreateTextTexture(Game::font, name, 250, 250, 250);
+            // tempTex;
+            src.x = src.y = 0;
+            dest.y = 460;
+            dest.w = 100 / 3 * (int)(name.size());
+            dest.x = (960 - dest.w) >> 1;
+            dest.h = 90 / 3 * 2;
+            src.w = 10000;
+            src.h = 9000;
+            TextureManager::Draw(tempTex, src, dest);
+
+            cout << name << endl;
+        }
+    }
+
+    SDL_StopTextInput();
+    cout << 33 << name << endl;
 }

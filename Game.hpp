@@ -33,7 +33,10 @@ public:
     void setMenu();
     bool running() { return isRunning; };
     TTF_Font *font;
+    static string name;
     static double currentFuel;
+    void takeNameInput();
+    bool isNameMenu = 1;
 
 private:
     bool isRunning;

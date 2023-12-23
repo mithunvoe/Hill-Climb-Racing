@@ -9,6 +9,7 @@ int main()
 
     game = new Game();
     game->init("Gari Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 640, false);
+   
     while (game->running())
     {
         frameStart = SDL_GetTicks();
