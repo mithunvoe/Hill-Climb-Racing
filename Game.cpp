@@ -74,6 +74,7 @@ auto &leaderboard(manager.addEntity());
 auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
 auto &gameover(manager.addEntity());
+auto &eyn(manager.addEntity());
 
 string Game::name;
 //
@@ -177,6 +178,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
+    eyn.addComponent<TransformComponent>(0, 0, 960, 640, 1);
+    eyn.addComponent<SpriteComponent>("assets/eynsoto.png");
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
@@ -480,10 +483,11 @@ void Game::update()
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    if(isNameMenu)
+    if (isNameMenu)
     {
-        
+
         takeNameInput();
+        isNameMenu = 0;
     }
     else if (inMenu)
     {
@@ -585,41 +589,57 @@ void Game::takeNameInput()
 {
     SDL_StartTextInput();
     bool running = true;
-    SDL_Event *event;
+    // SDL_Event *event;
     while (running)
     {
-        while (SDL_PollEvent(event) != 0)
+        SDL_RenderClear(renderer);
+        eyn.draw();
+        while (SDL_PollEvent(&Game::event) != 0)
         {
-            switch (event->type)
+            switch (Game::event.type)
             {
             case SDL_QUIT:
+                isRunning = false;
                 running = false;
+                // return;
                 break;
             case SDL_TEXTINPUT:
-                name += event->text.text;
+                if (name.size() < 9)
+                    name += Game::event.text.text;
                 break;
             case SDL_KEYDOWN:
-                if (event->key.keysym.sym == SDLK_BACKSPACE && !name.empty())
+                if (Game::event.key.keysym.sym == SDLK_BACKSPACE && !name.empty())
                 {
                     name.pop_back();
                 }
+                else if (event.key.keysym.sym == SDLK_RETURN)
+                {
+                    running = false;
+                }
                 break;
+            // case SDL_KEYUP:
+            //     if (event.key.keysym.sym == SDLK_RETURN)
+            //         eyn.getComponent<SpriteComponent>().setTexfromTex();
             }
-            tempTex = TextureManager::CreateTextTexture(Game::font, name, 250, 250, 250);
+
             // tempTex;
             src.x = src.y = 0;
-            dest.y = 460;
-            dest.w = 100 / 3 * (int)(name.size());
+            dest.y = 352;
+            dest.w = 85 / 3 * (int)(name.size());
             dest.x = (960 - dest.w) >> 1;
-            dest.h = 90 / 3 * 2;
+            dest.h = 85 / 3 * 2;
             src.w = 10000;
             src.h = 9000;
-            TextureManager::Draw(tempTex, src, dest);
 
             cout << name << endl;
         }
+        if (name.size())
+            tempTex = TextureManager::CreateTextTexture(Game::font, name, 83, 51, 44);
+        TextureManager::Draw(tempTex, src, dest);
+        SDL_RenderPresent(renderer);
     }
 
     SDL_StopTextInput();
+
     cout << 33 << name << endl;
 }
