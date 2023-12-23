@@ -19,12 +19,14 @@ public:
     void update();
     void render();
     void clean();
+    void gameOver();
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;
-    static bool inMenu ;
+    static bool inMenu;
+    static bool isOver;
     bool musicOn = 1;
-    static bool isHill , previsHill;
+    static bool isHill, previsHill;
     bool inLeaderboard = 0;
     void setMenu();
     bool running() { return isRunning; };

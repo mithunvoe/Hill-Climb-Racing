@@ -19,7 +19,7 @@ void TextureManager::DrawGari(SDL_Texture *tex, SDL_Rect src, SDL_Rect dest, flo
     SDL_RenderCopyEx(Game::renderer, tex, &src, &dest, angle, NULL, SDL_FLIP_NONE);
 }
 
-SDL_Texture *TextureManager::CreateTextTexture(TTF_Font *font, string text, int r, int g, int b)
+SDL_Texture *TextureManager::CreateTextTexture(TTF_Font *font, string text, Uint8 r, Uint8 g, Uint8 b)
 {
     SDL_Surface *tmpSurface = TTF_RenderText_Solid(font, text.c_str(), {r, g, b});
     if (tmpSurface == NULL)

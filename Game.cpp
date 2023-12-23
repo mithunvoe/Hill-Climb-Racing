@@ -37,6 +37,7 @@ double Game::currentFuel = 1000.0;
 bool Game::inMenu = 1;
 bool Game::isHill = 0;
 bool Game::previsHill = 0;
+bool Game::isOver = 0;
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
@@ -70,6 +71,8 @@ auto &musicButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
 auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
+auto &gameover(manager.addEntity());
+
 string name;
 //
 Entity *coin[10];
@@ -187,6 +190,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
 
+    gameover.addComponent<TransformComponent>(230, 110, 1000, 694, .5);
+    gameover.addComponent<SpriteComponent>("assets/gameover.png");
+
     int coinPos[] = {557, 112, 218, 314, 375, 469, 587, 790, 650, 850};
     for (int i = 0; i < 10; i++)
     {
@@ -213,6 +219,44 @@ void Game::setMenu()
     majhkhanerstart = 0;
     majhkhanerend = 0;
 }
+void Game::gameOver()
+{
+    gameover.draw();
+    scoreTex = TextureManager::CreateTextTexture(font, "Score: " + to_string(currentScore), 0, 0, 0);
+    src.x = src.y = 0;
+    dest.y = 460;
+    dest.w = 100 / 3 * (int)(to_string(currentScore).size() + 7);
+    dest.x = (960 - dest.w) >> 1;
+    dest.h = 90 / 3 * 2;
+    src.w = 10000;
+    src.h = 9000;
+    TextureManager::Draw(scoreTex, src, dest);
+    bg.getComponent<TransformComponent>().position.x = 0;
+    bg.getComponent<TransformComponent>().position.y = 0;
+    bg.getComponent<TransformComponent>().velocity.x = 0;
+    bg.getComponent<TransformComponent>().velocity.y = 0;
+    bg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+
+    bgg.getComponent<TransformComponent>().position.x = 960;
+    bgg.getComponent<TransformComponent>().position.y = 0;
+    bgg.getComponent<TransformComponent>().velocity.x = 0;
+    bgg.getComponent<TransformComponent>().velocity.y = 0;
+    bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+
+    // Score::inputScore();
+    Score::addScore(currentScore, name);
+
+    Game::isHill = Game::previsHill = 0;
+    currentScore = 0;
+    currentFuel = 1000.0;
+    manager.refresh();
+    manager.update();
+    isOver = 1;
+    setMenu();
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(scoreTex);
+    SDL_Delay(2000);
+}
 void Game::handleEvents()
 {
     SDL_PollEvent(&event);
@@ -222,10 +266,6 @@ void Game::handleEvents()
     musicCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), musicButton.getComponent<ColliderComponent>());
     switch (event.type)
     {
-    case SDL_QUIT:
-        isRunning = false;
-        Score::addScore(currentScore, name);
-        break;
     case SDL_KEYUP:
         if (event.key.keysym.sym == SDLK_ESCAPE)
             setMenu();
@@ -244,6 +284,20 @@ void Game::handleEvents()
                 musicButton.getComponent<SpriteComponent>().setTexfromTex(musiconTex);
             }
         }
+        if (event.key.keysym.sym == SDLK_g)
+        {
+            gameOver();
+            // SDL_Delay(2000);
+        }
+        break;
+    case SDL_QUIT:
+        isRunning = false;
+        if (currentScore)
+        {
+            // Score::inputScore();
+            Score::addScore(currentScore, name);
+        }
+
         break;
     case SDL_MOUSEBUTTONDOWN:
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
@@ -296,8 +350,12 @@ void Game::handleEvents()
                 else if (endCursorCollision)
                 {
                     isRunning = false;
-                    Score::inputScore();
-                    Score::addScore(currentScore, name);
+                    // Score::inputScore();
+                    if (currentScore)
+                    {
+                        // Score::inputScore();
+                        Score::addScore(currentScore, name);
+                    }
                 }
                 else if (lCursorCollision)
                 {
@@ -470,14 +528,22 @@ void Game::clean()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(brownend);
     SDL_DestroyTexture(whitend1);
-    SDL_DestroyTexture(whitend2);
     SDL_DestroyTexture(brownstart);
     SDL_DestroyTexture(whitestart1);
     SDL_DestroyTexture(whitestart2);
-    SDL_DestroyTexture(brownl);
+    SDL_DestroyTexture(whitend2);
     SDL_DestroyTexture(whitel1);
     SDL_DestroyTexture(whitel2);
+    SDL_DestroyTexture(brownl);
     SDL_DestroyTexture(tempTex);
+    SDL_DestroyTexture(fuelbarTex);
+    SDL_DestroyTexture(musiconTex);
+    SDL_DestroyTexture(musicoffTex);
+    SDL_DestroyTexture(leaderboardTex);
+    SDL_DestroyTexture(nameTex);
+    SDL_DestroyTexture(scoreTex);
+    SDL_DestroyTexture(bgwohillTex);
+    SDL_DestroyTexture(bgTex);
     Mix_FreeMusic(bgm);
     Mix_CloseAudio();
     SDL_Quit();
