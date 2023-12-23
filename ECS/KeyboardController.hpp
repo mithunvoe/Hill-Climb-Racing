@@ -53,11 +53,17 @@ public:
 
             transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
 
-            if (Game::event.type == SDL_KEYDOWN)
+            // if (Game::event.type==SDL_MOUSEBUTTONDOWN)
+            //     if (!Game::inMenu && Game::event.button.button == SDL_BUTTON_LEFT)
+            //     {
+
+            //     }
+
+            if (Game::event.type == SDL_KEYDOWN||Game::moveRight||Game::moveLeft)
             {
-                switch (Game::event.key.keysym.sym)
+                if (Game::event.key.keysym.sym == SDLK_RIGHT||Game::moveRight)
                 {
-                case SDLK_RIGHT:
+                    cout<<Game::moveLeft<<endl;
                     if (abs(jiniser_y - matir_y) > 1)
                     {
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -10;
@@ -68,8 +74,9 @@ public:
                     }
                     if (entity->getComponent<SpriteComponent>().entityName == "amibg")
                         Game::currentFuel -= 1;
-                    break;
-                case SDLK_LEFT:
+                }
+                else if (Game::event.key.keysym.sym == SDLK_LEFT)
+                {
                     if (abs(jiniser_y - matir_y) > 1)
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
                     else
@@ -82,16 +89,9 @@ public:
 
                     if (entity->getComponent<SpriteComponent>().entityName == "amibg")
                         Game::currentFuel -= .75;
-                    break;
-                case SDLK_SPACE:
-                    if (abs(jiniser_y - matir_y) < 1)
-                        transform->velocity /= Vector2D(1.5, 1.5);
-                    break;
-
-                default:
-                    break;
                 }
             }
+
             else if (abs(jiniser_y - matir_y) < 1)
             {
                 transform->velocity /= Vector2D(1.001, 1.001);
@@ -100,8 +100,8 @@ public:
                 transform->velocity /= Vector2D(1.0001, 1.0001);
         }
     }
-
     KeyboardController(/* args */) = default;
     ~KeyboardController() = default;
 };
+
 #endif
