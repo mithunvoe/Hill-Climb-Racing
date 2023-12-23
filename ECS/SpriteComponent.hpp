@@ -82,7 +82,10 @@ public:
             matir_y = 2 * 1000000 / (x * x + 10000);
             jiniser_y = bgTransform->position.y;
             prevAngle = angle;
-            // prevAngle += (0 - angle) / 100;
+            // if (prevAngle > 90)
+            //     prevAngle++;
+            // else
+            //     prevAngle--;
             prevAngle += torque;
             torque = 0;
             x += 32.5;
@@ -106,6 +109,8 @@ public:
         {
             if (abs(jiniser_y - matir_y) > .2)
                 angle = prevAngle;
+            cout << angle << "......" << endl;
+
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }
         else

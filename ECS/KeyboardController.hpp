@@ -32,9 +32,10 @@ public:
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
                 matir_y += 380;
             angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
-            cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
 
-            cout << transform->velocity.y << endl;
+            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
+            // cout << transform->velocity.y << endl;
+
             if (jiniser_y > matir_y + .1)
             {
                 transform->velocity.y -= g;
@@ -45,7 +46,9 @@ public:
                     transform->velocity.y = 0;
                 transform->position.y = matir_y;
             }
-            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
+
+            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), -g * sin(angle) * sin(angle));
+
             if (Game::event.type == SDL_KEYDOWN)
             {
                 switch (Game::event.key.keysym.sym)
