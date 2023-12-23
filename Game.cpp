@@ -3,8 +3,6 @@
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 #include "highscore.hpp"
-// #include "Map.hpp"
-// #include "GameObject.hpp"
 
 SDL_Renderer *Game::renderer = nullptr;
 Manager manager;
@@ -48,9 +46,7 @@ Mix_Chunk *coinSound;
 
 int groundLevel = 400;
 int currentScore;
-// int currentFuel = 100;
 int x, y;
-// Game::currentFuel = 1000;
 bool majhkhanerstart;
 bool majhkhanerend;
 bool majhkhanerl;
@@ -77,8 +73,6 @@ auto &sky(manager.addEntity());
 auto &gameover(manager.addEntity());
 
 string name;
-//
-// Entity *coin[10];
 
 enum groupLabels : size_t
 {
@@ -197,17 +191,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     gameover.addComponent<TransformComponent>(230, 110, 1000, 694, .5);
     gameover.addComponent<SpriteComponent>("assets/gameover.png");
-
-    // int coinPos[] = {557, 112, 218, 314, 375, 469, 587, 790, 650, 850};
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     coin[i] = &manager.addEntity();
-    //     coin[i]->addComponent<TransformComponent>(coinPos[i], groundLevel + 20, 100, 100, .4);
-    //     coin[i]->addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
-    //     coin[i]->addComponent<ColliderComponent>("coin");
-    //     coin[i]->addGroup(groupMap);
-    //     coin[i]->addGroup(groupSlide);
-    // }
     for (auto &it : manager.getGroup(groupSlide))
         it->addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
 }
@@ -290,7 +273,6 @@ void Game::handleEvents()
         if (event.key.keysym.sym == SDLK_g)
         {
             gameOver();
-            // SDL_Delay(2000);
         }
         break;
     case SDL_QUIT:
@@ -353,10 +335,8 @@ void Game::handleEvents()
                 else if (endCursorCollision)
                 {
                     isRunning = false;
-                    // Score::inputScore();
                     if (currentScore)
                     {
-                        // Score::inputScore();
                         Score::addScore(currentScore, name);
                     }
                 }
@@ -392,25 +372,25 @@ void Game::handleEvents()
 void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 {
 
-    double x_ = -200 + rand() % 960;
+    double coinX = -200 + rand() % 960;
 
     for (int j = 0; j < 5; j++)
     {
         auto &a(manager.addEntity());
         double y_;
         if (is_hill)
-            y_ = -2 * 1000000 / (x_ * x_ + 10000) + 380;
+            y_ = -2 * 1000000 / (coinX * coinX + 10000) + 380;
         else
             y_ = 380;
 
-        a.addComponent<TransformComponent>(480 + x_ + 960+10, y_, 100, 100, .4);
+        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_, 100, 100, .4);
         a.addComponent<SpriteComponent>(coinTexture, timeAnim, 9, "coin");
         a.addComponent<ColliderComponent>("coin");
         a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
         a.addGroup(groupMap);
         // coins.push_back(a);
         // cout << j << " ";
-        x_ += 50;
+        coinX += 50;
     }
     cout << endl;
 }

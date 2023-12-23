@@ -26,24 +26,23 @@ public:
     {
         if (!Game::inMenu)
         {
-            double v = .5 / 10, g = .01;
+            double v = .5 / 10, g = .01/3;
             double x = bgtrans->position.x + 480;
             double matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 10;
             double jiniser_y = transform->position.y;
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
             {
-                matir_y += ground;;
-                cout << matir_y << " " << transform->position.y << endl;
+                matir_y += ground;
+                ;
                 transform->velocity.x = bgtrans->velocity.x;
-                // transform->position.y=
             }
             angle = Game::dq[Game::i - 1] ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
 
-            if (jiniser_y > matir_y + .1)
+            if (jiniser_y > matir_y + 1)
             {
                 transform->velocity.y -= g;
             }
-            else if (jiniser_y < matir_y - .1)
+            else if (jiniser_y < matir_y - 1)
             {
                 if (transform->velocity.y < 0)
                     transform->velocity.y = 0;
