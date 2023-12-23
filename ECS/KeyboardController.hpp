@@ -20,34 +20,36 @@ public:
     {
         transform = &entity->getComponent<TransformComponent>();
         sprite = &entity->getComponent<SpriteComponent>();
+        ground = transform->position.y;
     }
     void update() override
     {
         if (!Game::inMenu)
         {
-            double v = .5 / 10, g = .01;
+            double v = .5 / 10, g = .01/3;
             double x = bgtrans->position.x + 480;
             double matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 10;
             double jiniser_y = transform->position.y;
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
-                matir_y += 380;
+            {
+                matir_y += ground;
+                ;
+                transform->velocity.x = bgtrans->velocity.x;
+            }
             angle = Game::dq[Game::i - 1] ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
 
-            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
-            // cout << transform->velocity.y << endl;
-
-            if (jiniser_y > matir_y + .1)
+            if (jiniser_y > matir_y + 1)
             {
                 transform->velocity.y -= g;
             }
-            else if (jiniser_y < matir_y - .1)
+            else if (jiniser_y < matir_y - 1)
             {
                 if (transform->velocity.y < 0)
                     transform->velocity.y = 0;
                 transform->position.y = matir_y;
             }
 
-            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), -g * sin(angle) * sin(angle));
+            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
 
             if (Game::event.type == SDL_KEYDOWN)
             {
@@ -62,7 +64,7 @@ public:
                     {
                         transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.25;
+                    Game::currentFuel -= 0.025;
                     break;
                 case SDLK_LEFT:
                     if (jiniser_y > matir_y + .1)
@@ -71,7 +73,7 @@ public:
                     {
                         transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.25;
+                    Game::currentFuel -= 0.025;
                     break;
                 case SDLK_SPACE:
                     if (abs(jiniser_y - matir_y) < 1)

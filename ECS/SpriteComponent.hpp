@@ -28,6 +28,11 @@ public:
         texture = TextureManager::loadTexture(path);
     }
     SpriteComponent() = default;
+
+    void setTexfromTex(SDL_Texture *tex)
+    {
+        texture = tex;
+    }
     SpriteComponent(const char *path)
     {
         setTex(path);
@@ -65,12 +70,14 @@ public:
     {
         texture = tex;
     }
-
-    ~SpriteComponent() { SDL_DestroyTexture(texture); }
-    void setTexfromTex(SDL_Texture *tex)
+    SpriteComponent(SDL_Texture *tex, const char *animName)
     {
         texture = tex;
+        entityName = animName;
+        // cout<<entityName<<endl;
     }
+
+    ~SpriteComponent() { SDL_DestroyTexture(texture); }
     void init() override
     {
         transform = &entity->getComponent<TransformComponent>();
@@ -117,7 +124,7 @@ public:
     {
         if (animated == 3)
         {
-            if (abs(jiniser_y - matir_y) > .2)
+            if (abs(jiniser_y - matir_y) > 1)
                 angle = prevAngle;
             // cout << angle << "......" << endl;
 
