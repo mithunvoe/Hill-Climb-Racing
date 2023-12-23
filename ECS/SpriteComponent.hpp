@@ -109,7 +109,7 @@ public:
         {
             if (abs(jiniser_y - matir_y) > .2)
                 angle = prevAngle;
-            cout << angle << "......" << endl;
+            // cout << angle << "......" << endl;
 
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }

@@ -38,6 +38,8 @@ bool Game::inMenu = 1;
 bool Game::isHill = 0;
 bool Game::previsHill = 0;
 bool Game::isOver = 0;
+long long Game::i = 1;
+deque<int> Game::dq = {0, 0, 0};
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
@@ -107,7 +109,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     SDL_Init(SDL_INIT_EVERYTHING);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-    // bgm = Mix_LoadMUS("assets/bgm.mp3");
+    bgm = Mix_LoadMUS("assets/bgm.mp3");
     coinSound = Mix_LoadWAV("assets/coin.wav");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -386,20 +388,28 @@ void Game::handleEvents()
 }
 void Game::update()
 {
-    // cout<<isHill<<endl;
     manager.refresh();
     manager.update();
+    // if (currentFuel <= 0)
+    //     gameOver();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
     {
         Mix_PlayChannel(-1, engine, 0);
     }
+    // for (auto &it : dq)
+    //     cout << it << ' ';
+    // cout << endl;
+    // cout << i << endl;
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
+        i++;
+        cout << i << endl;
         bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
         previsHill = isHill;
         isHill = (bool)(rand() & 1);
-
-        if (!isHill)
+        if (dq.size() <= i)
+            dq.push_back(isHill);
+        if (!dq[i])
         {
             bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
@@ -413,17 +423,21 @@ void Game::update()
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
+
+        i--;
+        cout << i << endl;
         bgg.addComponent<SpriteComponent>().setTexfromTex(bg.getComponent<SpriteComponent>().texture);
         isHill = (bool)(rand() & 1);
         previsHill = isHill;
-
-        if (!isHill)
+        if (i <= 0)
+            dq.push_front(isHill),i++;
+        if (!dq[i-1])
         {
-            bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+            bg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
         else
         {
-            bgg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
+            bg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
         }
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
@@ -459,7 +473,6 @@ void Game::render()
             leaderboard.draw();
             int level = 155;
             vector<pair<int, string>> v = Score::topFive();
-            // cout << v.size() << endl;
             for (int i = 0; i < v.size(); i++, level += 80)
             {
                 nameTex = TextureManager::CreateTextTexture(font, to_string(i + 1) + ". " + v[i].second, 255, 225, 134);
