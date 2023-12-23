@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 840 jkkk
 800 fg
 650 sdf
@@ -65,3 +66,18 @@
 0 j
 0 j
 0 j
+=======
+1120 sdf
+840 sdfg
+630 sdf
+440 sdf
+300 sdf
+300 dsf
+230 dfgh
+220 sdf
+170 sdf
+170 sdf
+170 fyujnb
+10 sdf
+0 sdf
+>>>>>>> b45ba81e52d9e76a8bd4a85c3c65dde7c1b4f15f

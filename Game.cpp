@@ -40,7 +40,7 @@ bool Game::isHill = 0;
 bool Game::previsHill = 0;
 bool Game::isOver = 0;
 long long Game::i = 1;
-deque<int> Game::dq = {0, 0, 0};
+deque<bool> Game::dq = {0, 0, 0};
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
@@ -425,22 +425,23 @@ void Game::update()
     {
         Mix_PlayChannel(-1, engine, 0);
     }
+
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
         i++;
-        // cout << i << endl;
-        bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
+        cout << i << endl;
+        bg.getComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
         previsHill = isHill;
         isHill = (bool)(rand() & 1);
         if (dq.size() <= i)
             dq.push_back(isHill);
         if (!dq[i])
         {
-            bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+            bgg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
         else
         {
-            bgg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
+            bgg.getComponent<SpriteComponent>().setTexfromTex(bgTex);
         }
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
@@ -449,21 +450,20 @@ void Game::update()
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
-
         i--;
         cout << i << endl;
-        bgg.addComponent<SpriteComponent>().setTexfromTex(bg.getComponent<SpriteComponent>().texture);
+        bgg.getComponent<SpriteComponent>().setTexfromTex(bg.getComponent<SpriteComponent>().texture);
         isHill = (bool)(rand() & 1);
         previsHill = isHill;
         if (i <= 0)
             dq.push_front(isHill), i++;
         if (!dq[i - 1])
         {
-            bg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+            bg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
         else
         {
-            bg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
+            bg.getComponent<SpriteComponent>().setTexfromTex(bgTex);
         }
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
