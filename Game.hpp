@@ -25,6 +25,8 @@ public:
     static std::vector<ColliderComponent *> colliders;
     static bool inMenu;
     static bool isOver;
+    static long long i;
+    static deque<int> dq;
     bool musicOn = 1;
     static bool isHill, previsHill;
     bool inLeaderboard = 0;

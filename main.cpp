@@ -2,7 +2,7 @@
 Game *game = nullptr;
 int main()
 {
-    const int FPS = 300;
+    const int FPS = 350;
     const int frameDelay = 1000 / FPS;
     uint32_t frameStart;
     int frameTime;
