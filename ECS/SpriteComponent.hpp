@@ -41,6 +41,16 @@ public:
         animations.emplace(animName, coin);
         play(animName);
     }
+    SpriteComponent(SDL_Texture *tex, int isAnimated, int frames, const char *animName)
+    {
+        // setTex(path);
+        texture = tex;
+        entityName = animName;
+        animated = isAnimated;
+        Animation coin = Animation(0, frames, 50);
+        animations.emplace(animName, coin);
+        play(animName);
+    }
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName, TransformComponent &hehe)
     {
         setTex(path);

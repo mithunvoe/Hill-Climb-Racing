@@ -75,7 +75,7 @@ auto &gameover(manager.addEntity());
 
 string name;
 //
-Entity *coin[10];
+// Entity *coin[10];
 
 enum groupLabels : size_t
 {
@@ -107,13 +107,15 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     SDL_Init(SDL_INIT_EVERYTHING);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-    // bgm = Mix_LoadMUS("assets/bgm.mp3");
+    bgm = Mix_LoadMUS("assets/bgm.mp3");
     coinSound = Mix_LoadWAV("assets/coin.wav");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
     Mix_PlayMusic(bgm, -1);
     Score::inputScore();
+    TTF_Init();
+    Game::font = TTF_OpenFont("assets/fnt.ttf", 200);
 
     menu.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     menu.addComponent<SpriteComponent>("assets/menu.jpg");
@@ -193,20 +195,18 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     gameover.addComponent<TransformComponent>(230, 110, 1000, 694, .5);
     gameover.addComponent<SpriteComponent>("assets/gameover.png");
 
-    int coinPos[] = {557, 112, 218, 314, 375, 469, 587, 790, 650, 850};
-    for (int i = 0; i < 10; i++)
-    {
-        coin[i] = &manager.addEntity();
-        coin[i]->addComponent<TransformComponent>(coinPos[i], groundLevel + 20, 100, 100, .4);
-        coin[i]->addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
-        coin[i]->addComponent<ColliderComponent>("coin");
-        coin[i]->addGroup(groupMap);
-        coin[i]->addGroup(groupSlide);
-    }
+    // int coinPos[] = {557, 112, 218, 314, 375, 469, 587, 790, 650, 850};
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     coin[i] = &manager.addEntity();
+    //     coin[i]->addComponent<TransformComponent>(coinPos[i], groundLevel + 20, 100, 100, .4);
+    //     coin[i]->addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
+    //     coin[i]->addComponent<ColliderComponent>("coin");
+    //     coin[i]->addGroup(groupMap);
+    //     coin[i]->addGroup(groupSlide);
+    // }
     for (auto &it : manager.getGroup(groupSlide))
         it->addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
-    TTF_Init();
-    Game::font = TTF_OpenFont("assets/fnt.ttf", 200);
 }
 
 auto &tiles(manager.getGroup(groupMap));
@@ -384,6 +384,20 @@ void Game::handleEvents()
     else if (!majhkhanerl)
         lbutton.getComponent<SpriteComponent>().setTexfromTex(brownl);
 }
+// static int coinID = 0;
+std::vector<Entity> coins;
+SDL_Texture *coinTexture = TextureManager::loadTexture("assets/coin.png");
+void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
+{
+    auto &a(manager.addEntity());
+    a.addComponent<TransformComponent>(700, groundLevel + 20, 100, 100, .4);
+    a.addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
+    a.addComponent<ColliderComponent>("coin");
+    a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
+    a.addGroup(groupMap);
+    // coins.push_back(a);
+}
+
 void Game::update()
 {
     // cout<<isHill<<endl;
@@ -398,7 +412,6 @@ void Game::update()
         bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
         previsHill = isHill;
         isHill = (bool)(rand() & 1);
-
         if (!isHill)
         {
             bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
@@ -410,6 +423,7 @@ void Game::update()
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
+        kiBackgroundMathaNoshtoLagaCoin(isHill);
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
