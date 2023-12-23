@@ -435,7 +435,6 @@ void Game::update()
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
-
         i--;
         cout << i << endl;
         bgg.getComponent<SpriteComponent>().setTexfromTex(bg.getComponent<SpriteComponent>().texture);
