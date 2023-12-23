@@ -30,6 +30,12 @@ public:
     {
         texture = tex;
     }
+
+    SpriteComponent(const char *path, const char *animName)
+    {
+        setTex(path);
+        entityName = animName;
+    }
     SpriteComponent(const char *path)
     {
         texture = TextureManager::loadTexture(path);

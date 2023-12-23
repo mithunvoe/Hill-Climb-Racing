@@ -66,7 +66,8 @@ public:
                     {
                         transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.025;
+                    if (entity->getComponent<SpriteComponent>().entityName == "amibg")
+                        Game::currentFuel -= 1;
                     break;
                 case SDLK_LEFT:
                     if (abs(jiniser_y - matir_y) > 1)
@@ -75,7 +76,8 @@ public:
                     {
                         transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.025;
+                    if (entity->getComponent<SpriteComponent>().entityName == "amibg")
+                        Game::currentFuel -= 1;
                     break;
                 case SDLK_SPACE:
                     if (abs(jiniser_y - matir_y) < 1)
