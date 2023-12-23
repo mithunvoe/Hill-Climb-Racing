@@ -33,7 +33,7 @@ public:
 
     SpriteComponent(const char *path, const char *animName)
     {
-        setTex(path);
+        texture = TextureManager::loadTexture(path);
         entityName = animName;
     }
     SpriteComponent(const char *path)
@@ -51,7 +51,6 @@ public:
     }
     SpriteComponent(SDL_Texture *tex, int isAnimated, int frames, const char *animName)
     {
-        // setTex(path);
         texture = tex;
         entityName = animName;
         animated = isAnimated;
