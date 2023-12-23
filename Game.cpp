@@ -291,18 +291,18 @@ void Game::handleEvents()
     switch (event.type)
     {
     case SDL_KEYDOWN:
-        switch (Game::event.key.keysym.sym)
-        {
-        case SDLK_RIGHT:
-            moveRight = 1;
-            break;
-        case SDLK_LEFT:
-            moveLeft = 1;
-            break;
-        }
-        break;
+        // switch (Game::event.key.keysym.sym)
+        // {
+        // case SDLK_RIGHT:
+        //     moveRight = 1;
+        //     break;
+        // case SDLK_LEFT:
+        //     moveLeft = 1;
+        //     break;
+        // }
+        // break;
     case SDL_KEYUP:
-        moveLeft = moveRight = 0;
+        // moveLeft = moveRight = 0;
         if (event.key.keysym.sym == SDLK_ESCAPE)
             setMenu();
         else if (event.key.keysym.sym == SDLK_m)
@@ -339,7 +339,7 @@ void Game::handleEvents()
         {
             if (gasCursorCollision)
             {
-                moveLeft = 1;
+                moveRight = 1;
                 gasButton.getComponent<SpriteComponent>().setTexfromTex(gas2);
             }
 

@@ -59,26 +59,46 @@ public:
 
             //     }
 
-            if (Game::event.type == SDL_KEYDOWN||Game::moveRight||Game::moveLeft)
+            if (Game::event.type == SDL_KEYDOWN || Game::moveRight || Game::moveLeft)
             {
-                if (Game::event.key.keysym.sym == SDLK_RIGHT||Game::moveRight)
+                double rightFuelLoss = 1, leftFuelLoss = .75, factor = 15, rotateAngle = 15;
+                if (Game::event.key.keysym.sym == SDLK_RIGHT || Game::moveRight)
                 {
-                    cout<<Game::moveLeft<<endl;
+                    // cout<<Game::moveLeft<<endl;
+                    if (Game::moveRight)
+                    {
+                        v /= factor;
+                        rightFuelLoss /= factor;
+                        rotateAngle /= factor;
+                    }
                     if (abs(jiniser_y - matir_y) > 1)
                     {
-                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -15;
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -rotateAngle;
                     }
                     else
                     {
                         transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
                     if (entity->getComponent<SpriteComponent>().entityName == "amibg")
-                        Game::currentFuel -= 1;
+                        Game::currentFuel -= rightFuelLoss;
+                    if (Game::moveRight)
+                    {
+                        v *= factor;
+                        rightFuelLoss *= factor;
+                        rotateAngle *= factor;
+
+                    } // Game::moveRight=0;
                 }
-                else if (Game::event.key.keysym.sym == SDLK_LEFT)
+                else if (Game::event.key.keysym.sym == SDLK_LEFT || Game::moveLeft)
                 {
+                    if (Game::moveLeft)
+                    {
+                        v /= factor;
+                        leftFuelLoss /= factor;
+                        rotateAngle /= factor;
+                    }
                     if (abs(jiniser_y - matir_y) > 1)
-                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = rotateAngle;
                     else
                     {
                         if (transform->velocity.x > 1)
@@ -88,7 +108,14 @@ public:
                     }
 
                     if (entity->getComponent<SpriteComponent>().entityName == "amibg")
-                        Game::currentFuel -= .75;
+                        Game::currentFuel -= leftFuelLoss;
+                    // Game::moveLeft=0;
+                    if (Game::moveLeft)
+                    {
+                        v *= factor;
+                        leftFuelLoss *= factor;
+                        rotateAngle *= factor;
+                    }
                 }
             }
 
