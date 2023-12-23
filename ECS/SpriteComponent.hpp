@@ -33,9 +33,16 @@ public:
     {
         texture = tex;
     }
+
+    SpriteComponent(const char *path, const char *animName)
+    {
+        setTex(path);
+        entityName = animName;
+    }
     SpriteComponent(const char *path)
     {
         setTex(path);
+        // entityName = animName;
     }
     SpriteComponent(const char *path, int isAnimated, int frames, const char *animName)
     {

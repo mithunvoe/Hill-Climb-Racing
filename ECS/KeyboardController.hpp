@@ -26,7 +26,7 @@ public:
     {
         if (!Game::inMenu)
         {
-            double v = .5 / 10, g = .01/3;
+            double v = .5 / 10, g = .01 / 3;
             double x = bgtrans->position.x + 480;
             double matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 10;
             double jiniser_y = transform->position.y;
@@ -64,7 +64,8 @@ public:
                     {
                         transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.025;
+                    if (entity->getComponent<SpriteComponent>().entityName == "amibg")
+                        Game::currentFuel -= 1;
                     break;
                 case SDLK_LEFT:
                     if (jiniser_y > matir_y + .1)
@@ -73,7 +74,8 @@ public:
                     {
                         transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.025;
+                    if (entity->getComponent<SpriteComponent>().entityName == "amibg")
+                        Game::currentFuel -= 1;
                     break;
                 case SDLK_SPACE:
                     if (abs(jiniser_y - matir_y) < 1)

@@ -168,7 +168,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     sky.addComponent<SpriteComponent>("assets/sky.png");
     sky.addGroup(groupMap);
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
-    bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+    bg.addComponent<SpriteComponent>("assets/bgwohill.png", "amibg");
     bg.addGroup(groupMap);
     bg.addGroup(groupBg);
     bg.addGroup(groupSlide);
@@ -231,27 +231,27 @@ void Game::gameOver()
     bg.getComponent<TransformComponent>().position.y = 0;
     bg.getComponent<TransformComponent>().velocity.x = 0;
     bg.getComponent<TransformComponent>().velocity.y = 0;
-    bg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+    bg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
 
     bgg.getComponent<TransformComponent>().position.x = 960;
     bgg.getComponent<TransformComponent>().position.y = 0;
     bgg.getComponent<TransformComponent>().velocity.x = 0;
     bgg.getComponent<TransformComponent>().velocity.y = 0;
-    bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
+    bgg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
 
     // Score::inputScore();
     Score::addScore(currentScore, name);
-
+    Game::i = 0;
     Game::isHill = Game::previsHill = 0;
     currentScore = 0;
-    currentFuel = 1000.0;
+    Game::currentFuel = 1000.0;
     manager.refresh();
     manager.update();
     isOver = 1;
     setMenu();
     SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(scoreTex);
     SDL_Delay(4000);
+    SDL_DestroyTexture(scoreTex);
 }
 void Game::handleEvents()
 {
@@ -405,7 +405,7 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
             y_ = -2 * 1000000 / (coinX * coinX + 10000) + 380;
         else
             y_ = 380;
-        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_ -10, 2068, 2072, 0.02);
+        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_ - 10, 2068, 2072, 0.02);
         a.addComponent<SpriteComponent>(coinTexture, noAnim, 1, "coin");
         a.getComponent<SpriteComponent>().setTexfromTex(fuelTexture);
         a.addComponent<ColliderComponent>("fuel");
@@ -417,9 +417,10 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 
 void Game::update()
 {
+    cout << currentFuel << endl;
     manager.refresh();
     manager.update();
-    if (currentFuel <= 0)
+    if (Game::currentFuel <= 0)
         gameOver();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
     {
@@ -492,7 +493,7 @@ void Game::update()
             {
                 cc->tag = "khawaFuel";
                 cc->entity->getComponent<SpriteComponent>().remove();
-                currentFuel = 1000;
+                Game::currentFuel = 1000.0;
             }
         }
     }
@@ -558,9 +559,9 @@ void Game::render()
             t->draw();
         TextureManager::Draw(tempTex, src, dest);
         dest.x += 600;
-        src.x = 1000 - currentFuel;
+        src.x = 1000 - Game::currentFuel;
         src.y = 0;
-        dest.w = 200 * currentFuel / 1000;
+        dest.w = 200 * Game::currentFuel / 1000;
         dest.h = 25;
         dest.x = 675 + 200 - dest.w;
         dest.y = 50;
@@ -634,9 +635,9 @@ void Game::takeNameInput()
                     running = false;
                 }
                 break;
-            // case SDL_KEYUP:
-            //     if (event.key.keysym.sym == SDLK_RETURN)
-            //         eyn.getComponent<SpriteComponent>().setTexfromTex();
+                // case SDL_KEYUP:
+                //     if (event.key.keysym.sym == SDLK_RETURN)
+                //         eyn.getComponent<SpriteComponent>().setTexfromTex();
             }
 
             // tempTex;
@@ -653,6 +654,7 @@ void Game::takeNameInput()
         if (name.size())
             tempTex = TextureManager::CreateTextTexture(Game::font, name, 83, 51, 44);
         TextureManager::Draw(tempTex, src, dest);
+        SDL_DestroyTexture(tempTex);
         SDL_RenderPresent(renderer);
     }
 
