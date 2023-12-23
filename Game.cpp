@@ -28,6 +28,10 @@ SDL_Texture *bgwohillTex;
 SDL_Texture *bgTex;
 SDL_Texture *coinTexture;
 SDL_Texture *fuelTexture;
+SDL_Texture /* Game:: */ *brake1;
+SDL_Texture /* Game:: */ *brake2;
+SDL_Texture /* Game:: */ *gas1;
+SDL_Texture /* Game:: */ *gas2;
 
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
@@ -56,6 +60,10 @@ bool startCursorCollision;
 bool lCursorCollision;
 bool endCursorCollision;
 bool musicCursorCollision;
+bool gasCursorCollision;
+bool brakeCursorCollision;
+bool Game::moveLeft;
+bool Game::moveRight;
 
 auto &gari(manager.addEntity());
 auto &wall(manager.addEntity());
@@ -74,6 +82,8 @@ auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
 auto &gameover(manager.addEntity());
 auto &eyn(manager.addEntity());
+auto &gasButton(manager.addEntity());
+auto &brakeButton(manager.addEntity());
 
 string Game::name;
 //
@@ -155,6 +165,17 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     endbutton.addComponent<SpriteComponent>(brownend);
     endbutton.getComponent<TransformComponent>().position.x = width / 2 - endbutton.getComponent<SpriteComponent>().destRect.w / 2;
     endbutton.addComponent<ColliderComponent>("ebutton");
+
+    brake1 = TextureManager::loadTexture("assets/brake1.png");
+    brake2 = TextureManager::loadTexture("assets/brake2.png");
+    gas1 = TextureManager::loadTexture("assets/gas1.png");
+    gas2 = TextureManager::loadTexture("assets/gas2.png");
+    brakeButton.addComponent<TransformComponent>(10, 640 - 256 * 0.6 + 5, 256, 256, 0.6);
+    brakeButton.addComponent<SpriteComponent>(brake1);
+    brakeButton.addComponent<ColliderComponent>("brake");
+    gasButton.addComponent<TransformComponent>(960 - 10 - 256 * 0.6, 640 - 256 * 0.6 + 5, 256, 256, 0.6);
+    gasButton.addComponent<SpriteComponent>(gas1);
+    gasButton.addComponent<ColliderComponent>("gas");
 
     musiconTex = TextureManager::loadTexture("assets/musicon.png");
     musicoffTex = TextureManager::loadTexture("assets/musicoff.png");
@@ -263,10 +284,25 @@ void Game::handleEvents()
     startCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), startbutton.getComponent<ColliderComponent>());
     endCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), endbutton.getComponent<ColliderComponent>());
     lCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), lbutton.getComponent<ColliderComponent>());
+    gasCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), gasButton.getComponent<ColliderComponent>());
+    brakeCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), brakeButton.getComponent<ColliderComponent>());
+
     musicCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), musicButton.getComponent<ColliderComponent>());
     switch (event.type)
     {
+    case SDL_KEYDOWN:
+        switch (Game::event.key.keysym.sym)
+        {
+        case SDLK_RIGHT:
+            moveRight = 1;
+            break;
+        case SDLK_LEFT:
+            moveLeft = 1;
+            break;
+        }
+        break;
     case SDL_KEYUP:
+        moveLeft = moveRight = 0;
         if (event.key.keysym.sym == SDLK_ESCAPE)
             setMenu();
         else if (event.key.keysym.sym == SDLK_m)
@@ -299,6 +335,20 @@ void Game::handleEvents()
 
         break;
     case SDL_MOUSEBUTTONDOWN:
+        if (!inMenu && event.button.button == SDL_BUTTON_LEFT)
+        {
+            if (gasCursorCollision)
+            {
+                moveLeft = 1;
+                gasButton.getComponent<SpriteComponent>().setTexfromTex(gas2);
+            }
+
+            else if (brakeCursorCollision)
+            {
+                moveLeft = 1;
+                brakeButton.getComponent<SpriteComponent>().setTexfromTex(brake2);
+            }
+        }
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
             if (!inLeaderboard)
@@ -322,6 +372,10 @@ void Game::handleEvents()
         }
         break;
     case SDL_MOUSEBUTTONUP:
+        moveLeft = moveRight = 0;
+        gasButton.getComponent<SpriteComponent>().setTexfromTex(gas1);
+        brakeButton.getComponent<SpriteComponent>().setTexfromTex(brake1);
+
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
             if (musicCursorCollision)
@@ -416,7 +470,7 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
         a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
         a.addGroup(groupMap);
     }
-    cout << endl;
+    // cout << endl;
 }
 
 void Game::update()
@@ -517,6 +571,7 @@ void Game::update()
 void Game::render()
 {
     SDL_RenderClear(renderer);
+
     if (isNameMenu)
     {
 
@@ -586,6 +641,9 @@ void Game::render()
         TextureManager::Draw(fuelbarTex, src, dest);
         fuelBorder.draw();
         gari.draw();
+        brakeButton.draw();
+        gasButton.draw();
+
         SDL_DestroyTexture(tempTex);
         SDL_DestroyTexture(fuelbarTex);
     }
@@ -621,6 +679,7 @@ void Game::clean()
 }
 void Game::takeNameInput()
 {
+
     SDL_StartTextInput();
     bool running = true;
     // SDL_Event *event;
@@ -628,6 +687,11 @@ void Game::takeNameInput()
     {
         SDL_RenderClear(renderer);
         eyn.draw();
+        SDL_GetMouseState(&x, &y);
+        cout << x << ' ' << y << endl;
+        cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
+        cursor.getComponent<TransformComponent>().position.x = x;
+        cursor.getComponent<TransformComponent>().position.y = y;
         while (SDL_PollEvent(&Game::event) != 0)
         {
             switch (Game::event.type)
@@ -656,25 +720,27 @@ void Game::takeNameInput()
                 //         eyn.getComponent<SpriteComponent>().setTexfromTex();
             }
 
+            // cursor.draw();
             // tempTex;
-            src.x = src.y = 0;
-            dest.y = 352;
-            dest.w = 85 / 3 * (int)(name.size());
-            dest.x = (960 - dest.w) >> 1;
-            dest.h = 85 / 3 * 2;
-            src.w = 10000;
-            src.h = 9000;
-
-            cout << name << endl;
         }
+        src.x = src.y = 0;
+        dest.y = 352;
+        dest.w = 85 / 3 * (int)(name.size());
+        dest.x = (960 - dest.w) >> 1;
+        dest.h = 85 / 3 * 2;
+        src.w = 10000;
+        src.h = 9000;
+
+        // cout << name << endl;
         if (name.size())
             tempTex = TextureManager::CreateTextTexture(Game::font, name, 83, 51, 44);
         TextureManager::Draw(tempTex, src, dest);
+
         SDL_DestroyTexture(tempTex);
         SDL_RenderPresent(renderer);
     }
 
     SDL_StopTextInput();
 
-    cout << 33 << name << endl;
+    // cout << 33 << name << endl;
 }

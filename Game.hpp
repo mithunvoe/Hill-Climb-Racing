@@ -37,6 +37,14 @@ public:
     static double currentFuel;
     void takeNameInput();
     bool isNameMenu = 1;
+    SDL_Texture *brake1, *brake2, *gas1, *gas2;
+    bool startCursorCollision;
+    bool lCursorCollision;
+    bool endCursorCollision;
+    bool musicCursorCollision;
+    bool brakeCursorCollision;
+    bool gasCursorCollision;
+    static bool moveLeft, moveRight;
 
 private:
     bool isRunning;
