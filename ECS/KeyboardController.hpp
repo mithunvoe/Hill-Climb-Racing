@@ -20,6 +20,7 @@ public:
     {
         transform = &entity->getComponent<TransformComponent>();
         sprite = &entity->getComponent<SpriteComponent>();
+        ground = transform->position.y;
     }
     void update() override
     {
@@ -30,11 +31,13 @@ public:
             double matir_y = Game::dq[Game::i - 1] ? 2 * 1000000 / (x * x + 10000) : 10;
             double jiniser_y = transform->position.y;
             if (entity->getComponent<SpriteComponent>().entityName == (string) "coin")
-                matir_y += 380;
+            {
+                matir_y += ground;;
+                cout << matir_y << " " << transform->position.y << endl;
+                transform->velocity.x = bgtrans->velocity.x;
+                // transform->position.y=
+            }
             angle = Game::dq[Game::i - 1] ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
-
-            // cout << setprecision(3) << fixed << x << " coin: " << jiniser_y << "  function: " << matir_y << endl;
-            // cout << transform->velocity.y << endl;
 
             if (jiniser_y > matir_y + .1)
             {
@@ -47,7 +50,7 @@ public:
                 transform->position.y = matir_y;
             }
 
-            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), -g * sin(angle) * sin(angle));
+            transform->velocity -= Vector2D(g * sin(angle) * cos(angle), g * sin(angle) * sin(angle));
 
             if (Game::event.type == SDL_KEYDOWN)
             {

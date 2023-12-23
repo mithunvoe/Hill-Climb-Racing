@@ -28,6 +28,7 @@ SDL_Texture *nameTex;
 SDL_Texture *scoreTex;
 SDL_Texture *bgwohillTex;
 SDL_Texture *bgTex;
+SDL_Texture *coinTexture;
 
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
@@ -126,7 +127,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<SpriteComponent>("assets/cursor.png");
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
-
+    coinTexture = TextureManager::loadTexture("assets/coin.png");
     brownstart = TextureManager::loadTexture("assets/startbuttonb.png");
     whitestart1 = TextureManager::loadTexture("assets/startbuttonw1.png");
     whitestart2 = TextureManager::loadTexture("assets/startbuttonw2.png");
@@ -387,17 +388,31 @@ void Game::handleEvents()
         lbutton.getComponent<SpriteComponent>().setTexfromTex(brownl);
 }
 // static int coinID = 0;
-std::vector<Entity> coins;
-SDL_Texture *coinTexture = TextureManager::loadTexture("assets/coin.png");
+// std::vector<Entity> coins;
 void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 {
-    auto &a(manager.addEntity());
-    a.addComponent<TransformComponent>(700, groundLevel + 20, 100, 100, .4);
-    a.addComponent<SpriteComponent>("assets/coin.png", timeAnim, 9, "coin");
-    a.addComponent<ColliderComponent>("coin");
-    a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
-    a.addGroup(groupMap);
-    // coins.push_back(a);
+
+    double x_ = -200 + rand() % 960;
+
+    for (int j = 0; j < 5; j++)
+    {
+        auto &a(manager.addEntity());
+        double y_;
+        if (is_hill)
+            y_ = -2 * 1000000 / (x_ * x_ + 10000) + 380;
+        else
+            y_ = 380;
+
+        a.addComponent<TransformComponent>(480 + x_ + 960+10, y_, 100, 100, .4);
+        a.addComponent<SpriteComponent>(coinTexture, timeAnim, 9, "coin");
+        a.addComponent<ColliderComponent>("coin");
+        a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
+        a.addGroup(groupMap);
+        // coins.push_back(a);
+        // cout << j << " ";
+        x_ += 50;
+    }
+    cout << endl;
 }
 
 void Game::update()
@@ -410,14 +425,10 @@ void Game::update()
     {
         Mix_PlayChannel(-1, engine, 0);
     }
-    // for (auto &it : dq)
-    //     cout << it << ' ';
-    // cout << endl;
-    // cout << i << endl;
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
         i++;
-        cout << i << endl;
+        // cout << i << endl;
         bg.addComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
         previsHill = isHill;
         isHill = (bool)(rand() & 1);
@@ -434,7 +445,7 @@ void Game::update()
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
-        kiBackgroundMathaNoshtoLagaCoin(isHill);
+        kiBackgroundMathaNoshtoLagaCoin(dq[i]);
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
@@ -445,8 +456,8 @@ void Game::update()
         isHill = (bool)(rand() & 1);
         previsHill = isHill;
         if (i <= 0)
-            dq.push_front(isHill),i++;
-        if (!dq[i-1])
+            dq.push_front(isHill), i++;
+        if (!dq[i - 1])
         {
             bg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
