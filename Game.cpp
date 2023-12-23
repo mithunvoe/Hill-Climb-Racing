@@ -26,7 +26,8 @@ SDL_Texture *musicoffTex;
 SDL_Texture *leaderboardTex;
 SDL_Texture *nameTex;
 SDL_Texture *scoreTex;
-SDL_Texture *bgwoHill;
+SDL_Texture *bgwohillTex;
+SDL_Texture *bgTex;
 
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
@@ -150,7 +151,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     musicButton.addComponent<SpriteComponent>(musiconTex);
     musicButton.addComponent<ColliderComponent>("mbutton");
 
-    sky.addComponent<TransformComponent>(0, -1920 + 250, 1920, 1920, 1);
+    bgTex = TextureManager::loadTexture("assets/bg.png");
+    bgwohillTex = TextureManager::loadTexture("assets/bgwohill.png");
+
+    sky.addComponent<TransformComponent>(0, -1920 + 600, 1920, 1920, 1);
     sky.addComponent<SpriteComponent>("assets/sky.png");
     sky.addGroup(groupMap);
     bg.addComponent<TransformComponent>(0, 0, 960, 640, 1);
@@ -163,7 +167,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     bgg.addGroup(groupMap);
     bgg.addGroup(groupSlide);
     bgg.addGroup(groupBg);
-
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
@@ -340,11 +343,11 @@ void Game::update()
 
         if (!isHill)
         {
-            bgg.addComponent<SpriteComponent>("assets/bgwohill.png");
+            bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
         else
         {
-            bgg.addComponent<SpriteComponent>("assets/bg.png");
+            bgg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
         }
         bg.getComponent<TransformComponent>().position.x = 0;
         bgg.getComponent<TransformComponent>().position.x = 960;
@@ -358,11 +361,11 @@ void Game::update()
 
         if (!isHill)
         {
-            bg.addComponent<SpriteComponent>("assets/bgwohill.png");
+            bgg.addComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
         }
         else
         {
-            bg.addComponent<SpriteComponent>("assets/bg.png");
+            bgg.addComponent<SpriteComponent>().setTexfromTex(bgTex);
         }
         bg.getComponent<TransformComponent>().position.x = -960;
         bgg.getComponent<TransformComponent>().position.x = 0;
@@ -382,7 +385,8 @@ void Game::update()
                 cc->tag = "khawaCoin";
                 cc->entity->getComponent<SpriteComponent>().remove();
                 currentScore += 10;
-                Mix_PlayChannel(-1, coinSound, 0);
+                if (musicOn)
+                    Mix_PlayChannel(-1, coinSound, 0);
             }
         }
     }
