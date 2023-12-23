@@ -97,7 +97,10 @@ public:
         if (bgTransform != nullptr)
         {
             x = bgTransform->position.x + 480;
-            matir_y = 2 * 1000000 / (x * x + 10000);
+            if (Game::dq[Game::i - 1])
+                matir_y = 2 * 1000000 / (x * x + 10000);
+            else
+                matir_y = 8.319;
             jiniser_y = bgTransform->position.y;
             prevAngle = angle;
             // if (prevAngle > 90)
@@ -125,15 +128,18 @@ public:
     {
         if (animated == 3)
         {
+            cout << angle << " " << prevAngle << endl;
             if (abs(jiniser_y - matir_y) > 0.001)
                 angle = prevAngle;
+            else if (abs(angle - prevAngle) > 01)
+            {
+                Game::isOver = 1;
+            }
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }
         else
             TextureManager::Draw(texture, srcRect, destRect);
     }
-
-
 
     void play(const char *animName)
     {
