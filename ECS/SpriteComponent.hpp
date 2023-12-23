@@ -3,7 +3,6 @@
 #include "../TextureManager.hpp"
 #include "Animation.hpp"
 #include <map>
-// #include "Game.hpp"
 
 class SpriteComponent : public Component
 {
@@ -23,6 +22,7 @@ public:
     double x;
     double matir_y, jiniser_y;
     double torque = 0;
+    int isGameOver = 0;
     std::map<const char *, Animation> animations;
     SpriteComponent() = default;
 
@@ -103,14 +103,10 @@ public:
                 matir_y = 8.319;
             jiniser_y = bgTransform->position.y;
             prevAngle = angle;
-            // if (prevAngle > 90)
-            //     prevAngle++;
-            // else
-            //     prevAngle--;
             prevAngle += torque;
             torque = 0;
             x += 32.5;
-            angle = Game::previsHill ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
+            angle = Game::dq[Game::i - 1] ? atan(-2 * (2000000 * x) / ((x * x + 10000) * (x * x + 10000))) : 0;
             angle *= 180 / 3.1416;
         }
         if (animated == 1)
@@ -128,13 +124,16 @@ public:
     {
         if (animated == 3)
         {
-            cout << angle << " " << prevAngle << endl;
+            auto angle2 = -angle;
+            auto prevAngle2 = -prevAngle;
             if (abs(jiniser_y - matir_y) > 0.001)
                 angle = prevAngle;
-            else if (abs(angle - prevAngle) > 01)
-            {
-                Game::isOver = 1;
-            }
+            else if (prevAngle2 - angle2 > 90 and prevAngle2 - angle2 < 270)
+                angle = prevAngle + (angle - 179 - prevAngle) / 20;
+            else
+                angle = prevAngle + (angle - prevAngle) / 20;
+            if (prevAngle2 - angle2 > 170 and prevAngle2 - angle2 < 190 and abs(jiniser_y - matir_y) < .01 and isGameOver < 0)
+                isGameOver = 600; 
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
         }
         else

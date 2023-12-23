@@ -36,14 +36,15 @@ SDL_Rect dest;
 double Game::currentFuel = 1000.0;
 bool Game::inMenu = 1;
 bool Game::isHill = 0;
-bool Game::previsHill = 0;
 bool Game::isOver = 0;
+bool Game::previsHill = 0;
 long long Game::i = 1;
 deque<bool> Game::dq = {0, 0, 0};
 
 Mix_Music *bgm;
 Mix_Chunk *engine;
 Mix_Chunk *coinSound;
+Mix_Chunk *fuelLow;
 
 int groundLevel = 400;
 int currentScore;
@@ -113,6 +114,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     bgm = Mix_LoadMUS("assets/bgm.mp3");
     coinSound = Mix_LoadWAV("assets/coin.wav");
+    fuelLow = Mix_LoadWAV("assets/beep.mp3");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
@@ -218,6 +220,8 @@ void Game::setMenu()
 void Game::gameOverFunc()
 {
     gameover.draw();
+    Mix_PlayChannel(-1, coinSound, 10);
+
     scoreTex = TextureManager::CreateTextTexture(font, "Score: " + to_string(currentScore), 0, 0, 0);
     src.x = src.y = 0;
     dest.y = 460;
@@ -250,6 +254,7 @@ void Game::gameOverFunc()
     setMenu();
     SDL_RenderPresent(renderer);
     SDL_Delay(4000);
+    gari.getComponent<SpriteComponent>().isGameOver = 0;
     SDL_DestroyTexture(scoreTex);
 }
 void Game::handleEvents()
@@ -416,12 +421,15 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 
 void Game::update()
 {
-    if (isOver)
+    if (gari.getComponent<SpriteComponent>().isGameOver == 1)
     {
-        printf("khelashesh");
         gameOverFunc();
+        gari.getComponent<SpriteComponent>().isGameOver = 0;
     }
-    cout << currentFuel << endl;
+    gari.getComponent<SpriteComponent>().isGameOver--;
+    cout << gari.getComponent<SpriteComponent>().isGameOver << endl;
+    // gameOverFunc();
+    // cout << currentFuel << endl;
     manager.refresh();
     manager.update();
     if (currentFuel <= 0)
@@ -434,7 +442,6 @@ void Game::update()
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
         i++;
-        cout << i << endl;
         bg.getComponent<SpriteComponent>().setTexfromTex(bgg.getComponent<SpriteComponent>().texture);
         previsHill = isHill;
         isHill = (bool)(rand() & 1);
@@ -452,6 +459,7 @@ void Game::update()
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
         kiBackgroundMathaNoshtoLagaCoin(dq[i]);
+        // cout << i << dq[i] << endl;
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
@@ -483,6 +491,8 @@ void Game::update()
     cursor.getComponent<TransformComponent>().position.x = x;
     cursor.getComponent<TransformComponent>().position.y = y;
 
+    if (currentFuel < 100)
+        Mix_PlayChannel(-1, fuelLow, 0);
     for (auto cc : colliders)
     {
         if (Collision::AABB(gari.getComponent<ColliderComponent>(), *cc))

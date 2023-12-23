@@ -58,9 +58,9 @@ public:
                 switch (Game::event.key.keysym.sym)
                 {
                 case SDLK_RIGHT:
-                    if (abs(jiniser_y - matir_y) > 1)
+                    if (abs(jiniser_y - matir_y) > 5)
                     {
-                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -10;
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -15;
                     }
                     else
                     {
@@ -70,8 +70,8 @@ public:
                         Game::currentFuel -= 1;
                     break;
                 case SDLK_LEFT:
-                    if (abs(jiniser_y - matir_y) > 1)
-                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 10;
+                    if (abs(jiniser_y - matir_y) > 5)
+                        entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = 15;
                     else
                     {
                         if (transform->velocity.x > 1)
