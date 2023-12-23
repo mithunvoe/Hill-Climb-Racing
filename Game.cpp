@@ -27,6 +27,7 @@ SDL_Texture *scoreTex;
 SDL_Texture *bgwohillTex;
 SDL_Texture *bgTex;
 SDL_Texture *coinTexture;
+SDL_Texture *fuelTexture;
 
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
@@ -122,6 +123,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
     coinTexture = TextureManager::loadTexture("assets/coin.png");
+    fuelTexture = TextureManager::loadTexture("assets/fuel.png");
     brownstart = TextureManager::loadTexture("assets/startbuttonb.png");
     whitestart1 = TextureManager::loadTexture("assets/startbuttonw1.png");
     whitestart2 = TextureManager::loadTexture("assets/startbuttonw2.png");
@@ -178,7 +180,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     scoreCoin.addGroup(groupMap);
 
     fuel.addComponent<TransformComponent>(870, 14, 2068, 2072, 0.04);
-    fuel.addComponent<SpriteComponent>("assets/fuel.png");
+    fuel.addComponent<SpriteComponent>(fuelTexture);
     fuel.addGroup(groupMap);
 
     fuelBorder.addComponent<TransformComponent>(666 + 5, 41 + 4, 210, 35, 0.988);
@@ -241,7 +243,7 @@ void Game::gameOver()
     setMenu();
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(scoreTex);
-    SDL_Delay(2000);
+    SDL_Delay(4000);
 }
 void Game::handleEvents()
 {
@@ -367,17 +369,15 @@ void Game::handleEvents()
     else if (!majhkhanerl)
         lbutton.getComponent<SpriteComponent>().setTexfromTex(brownl);
 }
-// static int coinID = 0;
-// std::vector<Entity> coins;
+
 void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
 {
 
-    double coinX = -200 + rand() % 960;
-
+    double coinX = min(-480, -480 - 200 + rand() % 960);
+    double y_;
     for (int j = 0; j < 5; j++)
     {
         auto &a(manager.addEntity());
-        double y_;
         if (is_hill)
             y_ = -2 * 1000000 / (coinX * coinX + 10000) + 380;
         else
@@ -388,9 +388,21 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
         a.addComponent<ColliderComponent>("coin");
         a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
         a.addGroup(groupMap);
-        // coins.push_back(a);
-        // cout << j << " ";
         coinX += 50;
+    }
+    if (Game::i % 8 == 0)
+    {
+        auto &a(manager.addEntity());
+        if (is_hill)
+            y_ = -2 * 1000000 / (coinX * coinX + 10000) + 380;
+        else
+            y_ = 380;
+        a.addComponent<TransformComponent>(480 + coinX + 960 + 10, y_ -10, 2068, 2072, 0.02);
+        a.addComponent<SpriteComponent>(coinTexture, noAnim, 1, "coin");
+        a.getComponent<SpriteComponent>().setTexfromTex(fuelTexture);
+        a.addComponent<ColliderComponent>("fuel");
+        a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
+        a.addGroup(groupMap);
     }
     cout << endl;
 }
@@ -399,8 +411,8 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
-    // if (currentFuel <= 0)
-    //     gameOver();
+    if (currentFuel <= 0)
+        gameOver();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
     {
         Mix_PlayChannel(-1, engine, 0);
@@ -465,6 +477,12 @@ void Game::update()
                 currentScore += 10;
                 if (musicOn)
                     Mix_PlayChannel(-1, coinSound, 0);
+            }
+            if (cc->tag == (string) "fuel")
+            {
+                cc->tag = "khawaFuel";
+                cc->entity->getComponent<SpriteComponent>().remove();
+                currentFuel = 1000;
             }
         }
     }

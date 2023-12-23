@@ -64,7 +64,7 @@ public:
                     {
                         transform->velocity -= Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.25;
+                    Game::currentFuel -= 0.025;
                     break;
                 case SDLK_LEFT:
                     if (jiniser_y > matir_y + .1)
@@ -73,7 +73,7 @@ public:
                     {
                         transform->velocity += Vector2D(v * cos(angle) * cos(angle), v * cos(angle) * sin(angle));
                     }
-                    Game::currentFuel -= 0.25;
+                    Game::currentFuel -= 0.025;
                     break;
                 case SDLK_SPACE:
                     if (abs(jiniser_y - matir_y) < 1)

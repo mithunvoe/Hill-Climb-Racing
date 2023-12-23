@@ -70,6 +70,12 @@ public:
     {
         texture = tex;
     }
+    SpriteComponent(SDL_Texture *tex, const char *animName)
+    {
+        texture = tex;
+        entityName = animName;
+        // cout<<entityName<<endl;
+    }
 
     ~SpriteComponent() { SDL_DestroyTexture(texture); }
     void init() override
