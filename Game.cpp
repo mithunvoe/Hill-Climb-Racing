@@ -28,10 +28,10 @@ SDL_Texture *bgwohillTex;
 SDL_Texture *bgTex;
 SDL_Texture *coinTexture;
 SDL_Texture *fuelTexture;
-SDL_Texture /* Game:: */ *brake1;
-SDL_Texture /* Game:: */ *brake2;
-SDL_Texture /* Game:: */ *gas1;
-SDL_Texture /* Game:: */ *gas2;
+SDL_Texture *brake1;
+SDL_Texture *brake2;
+SDL_Texture *gas1;
+SDL_Texture *gas2;
 SDL_Texture *car;
 SDL_Texture *neckCrackCar;
 
@@ -149,7 +149,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
 
-    car= TextureManager::loadTexture("assets/carAnim.png");
+    car = TextureManager::loadTexture("assets/carAnim.png");
     coinTexture = TextureManager::loadTexture("assets/coin.png");
     fuelTexture = TextureManager::loadTexture("assets/fuel.png");
     neckCrackCar = TextureManager::loadTexture("assets/carAnim2.png");
@@ -279,17 +279,22 @@ void Game::gameOverFunc()
     gari.getComponent<SpriteComponent>().setTexfromTex(car);
     // Score::inputScore();
     Score::addScore(currentScore, name);
+    dq.clear();
+    dq.push_back(0);
+    dq.push_back(0);
+    dq.push_back(0);
     Game::i = 1;
     Game::isHill = Game::previsHill = 0;
     currentScore = 0;
     Game::currentFuel = 1000.0;
     manager.refresh();
     manager.update();
-    setMenu();
     SDL_RenderPresent(renderer);
     SDL_Delay(4000);
     gari.getComponent<SpriteComponent>().isGameOver = 0;
     SDL_DestroyTexture(scoreTex);
+    // takeNameInput();
+    setMenu();
 }
 void Game::handleEvents()
 {
@@ -366,6 +371,7 @@ void Game::handleEvents()
                 {
                     majhkhanerstart = 1;
                     startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart2);
+                    // takeNameInput();
                 }
                 if (endCursorCollision)
                 {
@@ -408,7 +414,10 @@ void Game::handleEvents()
             else
             {
                 if (startCursorCollision)
+                {
+                    takeNameInput();
                     setMenu();
+                }
                 else if (endCursorCollision)
                 {
                     isRunning = false;
@@ -591,7 +600,7 @@ void Game::render()
     if (isNameMenu)
     {
 
-        takeNameInput();
+        // takeNameInput();
         isNameMenu = 0;
     }
     else if (inMenu)
@@ -670,6 +679,7 @@ void Game::clean()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+
     SDL_DestroyTexture(brownend);
     SDL_DestroyTexture(whitend1);
     SDL_DestroyTexture(brownstart);
@@ -688,6 +698,15 @@ void Game::clean()
     SDL_DestroyTexture(scoreTex);
     SDL_DestroyTexture(bgwohillTex);
     SDL_DestroyTexture(bgTex);
+    SDL_DestroyTexture(coinTexture);
+    SDL_DestroyTexture(fuelTexture);
+    SDL_DestroyTexture(brake1);
+    SDL_DestroyTexture(brake2);
+    SDL_DestroyTexture(gas1);
+    SDL_DestroyTexture(gas2);
+    SDL_DestroyTexture(car);
+    SDL_DestroyTexture(neckCrackCar);
+
     Mix_FreeMusic(bgm);
     Mix_CloseAudio();
     SDL_Quit();
@@ -695,7 +714,7 @@ void Game::clean()
 }
 void Game::takeNameInput()
 {
-
+    name.clear();
     SDL_StartTextInput();
     bool running = true;
     // SDL_Event *event;
@@ -703,11 +722,11 @@ void Game::takeNameInput()
     {
         SDL_RenderClear(renderer);
         eyn.draw();
-        SDL_GetMouseState(&x, &y);
-        cout << x << ' ' << y << endl;
-        cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
-        cursor.getComponent<TransformComponent>().position.x = x;
-        cursor.getComponent<TransformComponent>().position.y = y;
+        // SDL_GetMouseState(&x, &y);
+        // cout << x << ' ' << y << endl;
+        // cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
+        // cursor.getComponent<TransformComponent>().position.x = x;
+        // cursor.getComponent<TransformComponent>().position.y = y;
         while (SDL_PollEvent(&Game::event) != 0)
         {
             switch (Game::event.type)

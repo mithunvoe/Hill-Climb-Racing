@@ -71,7 +71,7 @@ public:
                         rightFuelLoss /= factor;
                         rotateAngle /= factor;
                     }
-                    if (abs(jiniser_y - matir_y) > 1)
+                    if (abs(jiniser_y - matir_y) > 5)
                     {
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = -rotateAngle;
                     }
@@ -97,7 +97,7 @@ public:
                         leftFuelLoss /= factor;
                         rotateAngle /= factor;
                     }
-                    if (abs(jiniser_y - matir_y) > 1)
+                    if (abs(jiniser_y - matir_y) > 5)
                         entity->manager.getGroup(1)[0]->getComponent<SpriteComponent>().torque = rotateAngle;
                     else
                     {
