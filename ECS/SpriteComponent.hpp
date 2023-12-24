@@ -126,13 +126,17 @@ public:
         {
             auto angle2 = -angle;
             auto prevAngle2 = -prevAngle;
-            cout<<"gari: "<<jiniser_y<<"matir y: "<<matir_y<<endl;
-            if (abs(jiniser_y - matir_y) > 0.001)
+            cout << "gari: " << jiniser_y << "matir y: " << matir_y << endl;
+            cout << "garir angle: " << prevAngle2 << "matir angle: " << angle2 << endl;
+            if (abs(jiniser_y - matir_y) > 2)
                 angle = prevAngle;
-            else if (prevAngle2 - angle2 > 90 and prevAngle2 - angle2 < 270)
-                angle = prevAngle + (angle - 179 - prevAngle) / 20;
             else
-                angle = prevAngle + (angle - prevAngle) / 20;
+            {
+                if (prevAngle2 - angle2 > 90 and prevAngle2 - angle2 < 270)
+                    angle = prevAngle + (angle - 179 - prevAngle) / 20;
+                else
+                    angle = prevAngle + (angle - prevAngle) / 20;
+            }
             if (prevAngle2 - angle2 > 170 and prevAngle2 - angle2 < 190 and abs(jiniser_y - matir_y) < .01 and isGameOver < 0)
                 isGameOver = 600;
             TextureManager::DrawGari(texture, srcRect, destRect, angle);
