@@ -28,10 +28,10 @@ SDL_Texture *bgwohillTex;
 SDL_Texture *bgTex;
 SDL_Texture *coinTexture;
 SDL_Texture *fuelTexture;
-SDL_Texture /* Game:: */ *brake1;
-SDL_Texture /* Game:: */ *brake2;
-SDL_Texture /* Game:: */ *gas1;
-SDL_Texture /* Game:: */ *gas2;
+SDL_Texture *brake1;
+SDL_Texture *brake2;
+SDL_Texture *gas1;
+SDL_Texture *gas2;
 SDL_Texture *car;
 SDL_Texture *neckCrackCar;
 
@@ -149,7 +149,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
 
-    car= TextureManager::loadTexture("assets/carAnim.png");
+    car = TextureManager::loadTexture("assets/carAnim.png");
     coinTexture = TextureManager::loadTexture("assets/coin.png");
     fuelTexture = TextureManager::loadTexture("assets/fuel.png");
     neckCrackCar = TextureManager::loadTexture("assets/carAnim2.png");
@@ -670,6 +670,7 @@ void Game::clean()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+
     SDL_DestroyTexture(brownend);
     SDL_DestroyTexture(whitend1);
     SDL_DestroyTexture(brownstart);
@@ -688,6 +689,15 @@ void Game::clean()
     SDL_DestroyTexture(scoreTex);
     SDL_DestroyTexture(bgwohillTex);
     SDL_DestroyTexture(bgTex);
+    SDL_DestroyTexture(coinTexture);
+    SDL_DestroyTexture(fuelTexture);
+    SDL_DestroyTexture(brake1);
+    SDL_DestroyTexture(brake2);
+    SDL_DestroyTexture(gas1);
+    SDL_DestroyTexture(gas2);
+    SDL_DestroyTexture(car);
+    SDL_DestroyTexture(neckCrackCar);
+
     Mix_FreeMusic(bgm);
     Mix_CloseAudio();
     SDL_Quit();
