@@ -61,7 +61,7 @@ public:
 
             if (Game::event.type == SDL_KEYDOWN || Game::moveRight || Game::moveLeft)
             {
-                double rightFuelLoss = 1, leftFuelLoss = .75, factor = 15, rotateAngle = 15;
+                double rightFuelLoss = 1, leftFuelLoss = .75, factor = 20, rotateAngle = 15;
                 if (Game::event.key.keysym.sym == SDLK_RIGHT || Game::moveRight)
                 {
                     // cout<<Game::moveLeft<<endl;
