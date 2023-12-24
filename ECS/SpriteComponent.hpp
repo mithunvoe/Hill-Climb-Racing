@@ -126,8 +126,8 @@ public:
         {
             auto angle2 = -angle;
             auto prevAngle2 = -prevAngle;
-            cout << "gari: " << jiniser_y << "matir y: " << matir_y << endl;
-            cout << "garir angle: " << prevAngle2 << "matir angle: " << angle2 << endl;
+            // cout << "gari: " << jiniser_y << "matir y: " << matir_y << endl;
+            // cout << "garir angle: " << prevAngle2 << "matir angle: " << angle2 << endl;
             if (abs(jiniser_y - matir_y) > 2)
                 angle = prevAngle;
             else

@@ -39,7 +39,7 @@ std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
 
-double Game::currentFuel = 1000.0;
+double Game::currentFuel = 500.0;
 bool Game::inMenu = 1;
 bool Game::isHill = 0;
 bool Game::isOver = 0;
@@ -286,7 +286,7 @@ void Game::gameOverFunc()
     Game::i = 1;
     Game::isHill = Game::previsHill = 0;
     currentScore = 0;
-    Game::currentFuel = 1000.0;
+    Game::currentFuel = 500.0;
     manager.refresh();
     manager.update();
     SDL_RenderPresent(renderer);
@@ -549,8 +549,8 @@ void Game::update()
         previsHill = isHill;
         if (i <= 0)
             dq.push_front(isHill), i++;
-        if (!dq[i - 1])
-            dq.push_front(isHill), i++;
+        // if (!dq[i - 1])
+        //     dq.push_front(isHill), i++;
         if (!dq[i - 1])
         {
             bg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
@@ -588,7 +588,7 @@ void Game::update()
             {
                 cc->tag = "khawaFuel";
                 cc->entity->getComponent<SpriteComponent>().remove();
-                Game::currentFuel = 1000.0;
+                Game::currentFuel = 500.0;
             }
         }
     }
@@ -657,7 +657,7 @@ void Game::render()
         dest.x += 600;
         src.x = 1000 - Game::currentFuel;
         src.y = 0;
-        dest.w = 200 * Game::currentFuel / 1000;
+        dest.w = 200 * Game::currentFuel / 500;
         dest.h = 25;
         dest.x = 675 + 200 - dest.w;
         dest.y = 50;
