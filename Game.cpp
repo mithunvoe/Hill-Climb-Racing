@@ -279,17 +279,22 @@ void Game::gameOverFunc()
     gari.getComponent<SpriteComponent>().setTexfromTex(car);
     // Score::inputScore();
     Score::addScore(currentScore, name);
+    dq.clear();
+    dq.push_back(0);
+    dq.push_back(0);
+    dq.push_back(0);
     Game::i = 1;
     Game::isHill = Game::previsHill = 0;
     currentScore = 0;
     Game::currentFuel = 1000.0;
     manager.refresh();
     manager.update();
-    setMenu();
     SDL_RenderPresent(renderer);
     SDL_Delay(4000);
     gari.getComponent<SpriteComponent>().isGameOver = 0;
     SDL_DestroyTexture(scoreTex);
+    // takeNameInput();
+    setMenu();
 }
 void Game::handleEvents()
 {
@@ -366,6 +371,7 @@ void Game::handleEvents()
                 {
                     majhkhanerstart = 1;
                     startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart2);
+                    // takeNameInput();
                 }
                 if (endCursorCollision)
                 {
@@ -408,7 +414,10 @@ void Game::handleEvents()
             else
             {
                 if (startCursorCollision)
+                {
+                    takeNameInput();
                     setMenu();
+                }
                 else if (endCursorCollision)
                 {
                     isRunning = false;
@@ -591,7 +600,7 @@ void Game::render()
     if (isNameMenu)
     {
 
-        takeNameInput();
+        // takeNameInput();
         isNameMenu = 0;
     }
     else if (inMenu)
@@ -705,7 +714,7 @@ void Game::clean()
 }
 void Game::takeNameInput()
 {
-
+    name.clear();
     SDL_StartTextInput();
     bool running = true;
     // SDL_Event *event;
@@ -713,11 +722,11 @@ void Game::takeNameInput()
     {
         SDL_RenderClear(renderer);
         eyn.draw();
-        SDL_GetMouseState(&x, &y);
-        cout << x << ' ' << y << endl;
-        cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
-        cursor.getComponent<TransformComponent>().position.x = x;
-        cursor.getComponent<TransformComponent>().position.y = y;
+        // SDL_GetMouseState(&x, &y);
+        // cout << x << ' ' << y << endl;
+        // cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
+        // cursor.getComponent<TransformComponent>().position.x = x;
+        // cursor.getComponent<TransformComponent>().position.y = y;
         while (SDL_PollEvent(&Game::event) != 0)
         {
             switch (Game::event.type)
