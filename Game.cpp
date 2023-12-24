@@ -32,6 +32,7 @@ SDL_Texture /* Game:: */ *brake1;
 SDL_Texture /* Game:: */ *brake2;
 SDL_Texture /* Game:: */ *gas1;
 SDL_Texture /* Game:: */ *gas2;
+SDL_Texture *car;
 SDL_Texture *neckCrackCar;
 
 std::vector<ColliderComponent *> Game::colliders;
@@ -147,6 +148,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     cursor.addComponent<SpriteComponent>("assets/cursor.png");
     cursor.addComponent<ColliderComponent>();
     SDL_ShowCursor(false);
+
+    car= TextureManager::loadTexture("assets/carAnim.png");
     coinTexture = TextureManager::loadTexture("assets/coin.png");
     fuelTexture = TextureManager::loadTexture("assets/fuel.png");
     neckCrackCar = TextureManager::loadTexture("assets/carAnim2.png");
@@ -273,6 +276,7 @@ void Game::gameOverFunc()
     bgg.getComponent<TransformComponent>().velocity.y = 0;
     bgg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
 
+    gari.getComponent<SpriteComponent>().setTexfromTex(car);
     // Score::inputScore();
     Score::addScore(currentScore, name);
     Game::i = 0;
