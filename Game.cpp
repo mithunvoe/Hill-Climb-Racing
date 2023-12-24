@@ -50,7 +50,7 @@ Mix_Chunk *engine;
 Mix_Chunk *coinSound;
 Mix_Chunk *fuelLow;
 
-int groundLevel = 400;
+int groundLevel = 385;
 int currentScore;
 int x, y;
 bool majhkhanerstart;
@@ -217,7 +217,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     fuelBorder.addComponent<TransformComponent>(666 + 5, 41 + 4, 210, 35, 0.988);
     fuelBorder.addComponent<SpriteComponent>("assets/fborder.png");
 
-    gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .2);
+    gari.addComponent<TransformComponent>(20, groundLevel, 325, 215, .25);
     gari.addComponent<SpriteComponent>("assets/carAnim.png", chakaAnim, 5, "car", bg.getComponent<TransformComponent>());
     gari.addComponent<ColliderComponent>("gari");
     gari.addGroup(groupPlayers);
