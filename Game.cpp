@@ -279,7 +279,7 @@ void Game::gameOverFunc()
     gari.getComponent<SpriteComponent>().setTexfromTex(car);
     // Score::inputScore();
     Score::addScore(currentScore, name);
-    Game::i = 0;
+    Game::i = 1;
     Game::isHill = Game::previsHill = 0;
     currentScore = 0;
     Game::currentFuel = 1000.0;
