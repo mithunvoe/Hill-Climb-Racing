@@ -8,7 +8,7 @@ int main()
     int frameTime;
 
     game = new Game();
-    game->init("Gari Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 640, false);
+    game->init("Hill-Climb Racing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 640, false);
    
     while (game->running())
     {

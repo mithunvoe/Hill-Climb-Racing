@@ -249,7 +249,8 @@ void Game::setMenu()
 void Game::gameOverFunc()
 {
     gameover.draw();
-    Mix_PlayChannel(-1, gameOverSound, 0);
+    if (musicOn)
+        Mix_PlayChannel(-1, gameOverSound, 0);
 
     scoreTex = TextureManager::CreateTextTexture(font, "Score: " + to_string(currentScore), 0, 0, 0);
     src.x = src.y = 0;
@@ -309,7 +310,7 @@ void Game::handleEvents()
         //     break;
         // }
         // break;
-    case SDL_KEYUP:
+        // case SDL_KEYUP:
         // moveLeft = moveRight = 0;
         if (event.key.keysym.sym == SDLK_ESCAPE)
             setMenu();
@@ -327,10 +328,6 @@ void Game::handleEvents()
                 musicOn = 1;
                 musicButton.getComponent<SpriteComponent>().setTexfromTex(musiconTex);
             }
-        }
-        if (event.key.keysym.sym == SDLK_g)
-        {
-            gameOverFunc();
         }
         break;
     case SDL_QUIT:
@@ -489,7 +486,8 @@ void Game::update()
     }
     if (gari.getComponent<SpriteComponent>().isGameOver == 600)
     {
-        Mix_PlayChannel(-1, neckCrackSound, 1);
+        if (musicOn)
+            Mix_PlayChannel(-1, neckCrackSound, 1);
         gari.getComponent<SpriteComponent>().setTexfromTex(neckCrackCar);
     }
     gari.getComponent<SpriteComponent>().isGameOver--;
@@ -502,7 +500,9 @@ void Game::update()
         gameOverFunc();
     if (bg.getComponent<TransformComponent>().velocity.x < 0)
     {
-        Mix_PlayChannel(-1, engine, 0);
+        if (musicOn)
+
+            Mix_PlayChannel(-1, engine, 0);
     }
 
     if (bg.getComponent<TransformComponent>().position.x < -960)
@@ -557,7 +557,7 @@ void Game::update()
     cursor.getComponent<TransformComponent>().position.x = x;
     cursor.getComponent<TransformComponent>().position.y = y;
 
-    if (currentFuel < 100)
+    if (currentFuel < 100 && musicOn)
         Mix_PlayChannel(-1, fuelLowSound, 0);
     for (auto cc : colliders)
     {
