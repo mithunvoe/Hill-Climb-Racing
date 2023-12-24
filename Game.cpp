@@ -32,6 +32,7 @@ SDL_Texture /* Game:: */ *brake1;
 SDL_Texture /* Game:: */ *brake2;
 SDL_Texture /* Game:: */ *gas1;
 SDL_Texture /* Game:: */ *gas2;
+SDL_Texture *neckCrackCar;
 
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
@@ -48,7 +49,10 @@ deque<bool> Game::dq = {0, 0, 0};
 Mix_Music *bgm;
 Mix_Chunk *engine;
 Mix_Chunk *coinSound;
-Mix_Chunk *fuelLow;
+Mix_Chunk *fuelLowSound;
+Mix_Chunk *gameOverSound;
+Mix_Chunk *neckCrackSound = Mix_LoadWAV("assets/neckcrack.mp3");
+;
 
 int groundLevel = 385;
 int currentScore;
@@ -123,8 +127,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     bgm = Mix_LoadMUS("assets/bgm.mp3");
-    coinSound = Mix_LoadWAV("assets/coin.wav");
-    fuelLow = Mix_LoadWAV("assets/beep.mp3");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
@@ -132,6 +134,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     Score::inputScore();
     TTF_Init();
     Game::font = TTF_OpenFont("assets/fnt.ttf", 200);
+
+    coinSound = Mix_LoadWAV("assets/coin.wav");
+    fuelLowSound = Mix_LoadWAV("assets/beep.mp3");
+    neckCrackSound = Mix_LoadWAV("assets/neckcrack.mp3");
+    gameOverSound = Mix_LoadWAV("assets/gameover.mp3");
 
     menu.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     menu.addComponent<SpriteComponent>("assets/menu.jpg");
@@ -142,6 +149,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     SDL_ShowCursor(false);
     coinTexture = TextureManager::loadTexture("assets/coin.png");
     fuelTexture = TextureManager::loadTexture("assets/fuel.png");
+    neckCrackCar = TextureManager::loadTexture("assets/carAnim2.png");
     brownstart = TextureManager::loadTexture("assets/startbuttonb.png");
     whitestart1 = TextureManager::loadTexture("assets/startbuttonw1.png");
     whitestart2 = TextureManager::loadTexture("assets/startbuttonw2.png");
@@ -241,7 +249,7 @@ void Game::setMenu()
 void Game::gameOverFunc()
 {
     gameover.draw();
-    Mix_PlayChannel(-1, coinSound, 10);
+    Mix_PlayChannel(-1, gameOverSound, 0);
 
     scoreTex = TextureManager::CreateTextTexture(font, "Score: " + to_string(currentScore), 0, 0, 0);
     src.x = src.y = 0;
@@ -472,7 +480,6 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
     }
     // cout << endl;
 }
-
 void Game::update()
 {
     if (gari.getComponent<SpriteComponent>().isGameOver == 1)
@@ -480,8 +487,13 @@ void Game::update()
         gameOverFunc();
         gari.getComponent<SpriteComponent>().isGameOver = 0;
     }
+    if (gari.getComponent<SpriteComponent>().isGameOver == 600)
+    {
+        Mix_PlayChannel(-1, neckCrackSound, 1);
+        gari.getComponent<SpriteComponent>().setTexfromTex(neckCrackCar);
+    }
     gari.getComponent<SpriteComponent>().isGameOver--;
-    cout << gari.getComponent<SpriteComponent>().isGameOver << endl;
+    // cout << gari.getComponent<SpriteComponent>().isGameOver << endl;
     // gameOverFunc();
     // cout << currentFuel << endl;
     manager.refresh();
@@ -546,7 +558,7 @@ void Game::update()
     cursor.getComponent<TransformComponent>().position.y = y;
 
     if (currentFuel < 100)
-        Mix_PlayChannel(-1, fuelLow, 0);
+        Mix_PlayChannel(-1, fuelLowSound, 0);
     for (auto cc : colliders)
     {
         if (Collision::AABB(gari.getComponent<ColliderComponent>(), *cc))
