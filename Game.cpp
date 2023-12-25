@@ -690,43 +690,6 @@ void Game::render()
     SDL_RenderPresent(renderer);
 }
 
-void Game::clean()
-{
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-
-    SDL_DestroyTexture(brownend);
-    SDL_DestroyTexture(whitend1);
-    SDL_DestroyTexture(brownstart);
-    SDL_DestroyTexture(whitestart1);
-    SDL_DestroyTexture(whitestart2);
-    SDL_DestroyTexture(whitend2);
-    SDL_DestroyTexture(whitel1);
-    SDL_DestroyTexture(whitel2);
-    SDL_DestroyTexture(brownl);
-    SDL_DestroyTexture(tempTex);
-    SDL_DestroyTexture(fuelbarTex);
-    SDL_DestroyTexture(musiconTex);
-    SDL_DestroyTexture(musicoffTex);
-    SDL_DestroyTexture(leaderboardTex);
-    SDL_DestroyTexture(nameTex);
-    SDL_DestroyTexture(scoreTex);
-    SDL_DestroyTexture(bgwohillTex);
-    SDL_DestroyTexture(bgTex);
-    SDL_DestroyTexture(coinTexture);
-    SDL_DestroyTexture(fuelTexture);
-    SDL_DestroyTexture(brake1);
-    SDL_DestroyTexture(brake2);
-    SDL_DestroyTexture(gas1);
-    SDL_DestroyTexture(gas2);
-    SDL_DestroyTexture(car);
-    SDL_DestroyTexture(neckCrackCar);
-
-    Mix_FreeMusic(bgm);
-    Mix_CloseAudio();
-    SDL_Quit();
-    printf("Game Cleaned\nScore: %d\n", currentScore);
-}
 void Game::takeNameInput()
 {
     name.clear();
@@ -783,4 +746,47 @@ void Game::takeNameInput()
     }
 
     SDL_StopTextInput();
+}
+void Game::clean()
+{
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+
+    SDL_DestroyTexture(brownend);
+    SDL_DestroyTexture(whitend1);
+    SDL_DestroyTexture(brownstart);
+    SDL_DestroyTexture(whitestart1);
+    SDL_DestroyTexture(whitestart2);
+    SDL_DestroyTexture(whitend2);
+    SDL_DestroyTexture(whitel1);
+    SDL_DestroyTexture(whitel2);
+    SDL_DestroyTexture(brownl);
+    SDL_DestroyTexture(tempTex);
+    SDL_DestroyTexture(fuelbarTex);
+    SDL_DestroyTexture(musiconTex);
+    SDL_DestroyTexture(musicoffTex);
+    SDL_DestroyTexture(leaderboardTex);
+    SDL_DestroyTexture(nameTex);
+    SDL_DestroyTexture(scoreTex);
+    SDL_DestroyTexture(bgwohillTex);
+    SDL_DestroyTexture(bgTex);
+    SDL_DestroyTexture(coinTexture);
+    SDL_DestroyTexture(fuelTexture);
+    SDL_DestroyTexture(brake1);
+    SDL_DestroyTexture(brake2);
+    SDL_DestroyTexture(gas1);
+    SDL_DestroyTexture(gas2);
+    SDL_DestroyTexture(car);
+    SDL_DestroyTexture(neckCrackCar);
+
+    Mix_FreeMusic(bgm);
+    Mix_FreeChunk(coinSound);
+    Mix_FreeChunk(fuelLowSound);
+    Mix_FreeChunk(gameOverSound);
+    Mix_FreeChunk(neckCrackSound);
+    Mix_FreeChunk(buttonSound);
+    Mix_FreeChunk(kbSound);
+    Mix_CloseAudio();
+    SDL_Quit();
+    printf("Game Cleaned\nScore: %d\n", currentScore);
 }
