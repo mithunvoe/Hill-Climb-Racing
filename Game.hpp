@@ -30,6 +30,7 @@ public:
     bool musicOn = 1;
     static bool isHill, previsHill;
     bool inLeaderboard = 0;
+    bool inInfo = 0;
     void setMenu();
     bool running() { return isRunning; };
     TTF_Font *font;
@@ -40,6 +41,7 @@ public:
     SDL_Texture *brake1, *brake2, *gas1, *gas2;
     bool startCursorCollision;
     bool lCursorCollision;
+    bool iCursorCollision;
     bool endCursorCollision;
     bool musicCursorCollision;
     bool brakeCursorCollision;

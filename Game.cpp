@@ -17,6 +17,9 @@ SDL_Texture *whitend2;
 SDL_Texture *whitel1;
 SDL_Texture *whitel2;
 SDL_Texture *brownl;
+SDL_Texture *whitei1;
+SDL_Texture *whitei2;
+SDL_Texture *browni;
 SDL_Texture *tempTex;
 SDL_Texture *fuelbarTex;
 SDL_Texture *musiconTex;
@@ -34,7 +37,6 @@ SDL_Texture *gas1;
 SDL_Texture *gas2;
 SDL_Texture *car;
 SDL_Texture *neckCrackCar;
-
 std::vector<ColliderComponent *> Game::colliders;
 SDL_Rect src;
 SDL_Rect dest;
@@ -48,12 +50,12 @@ long long Game::i = 1;
 deque<bool> Game::dq = {0, 0, 0};
 
 Mix_Music *bgm;
-Mix_Chunk *engine;
 Mix_Chunk *coinSound;
 Mix_Chunk *fuelLowSound;
 Mix_Chunk *gameOverSound;
-Mix_Chunk *neckCrackSound = Mix_LoadWAV("assets/neckcrack.mp3");
-;
+Mix_Chunk *neckCrackSound;
+Mix_Chunk *buttonSound;
+Mix_Chunk *kbSound;
 
 int groundLevel = 385;
 int currentScore;
@@ -61,6 +63,7 @@ int x, y;
 bool majhkhanerstart;
 bool majhkhanerend;
 bool majhkhanerl;
+bool majhkhaneri;
 bool startCursorCollision;
 bool lCursorCollision;
 bool endCursorCollision;
@@ -82,7 +85,9 @@ auto &scoreCoin(manager.addEntity());
 auto &fuel(manager.addEntity());
 auto &fuelBorder(manager.addEntity());
 auto &musicButton(manager.addEntity());
+auto &iButton(manager.addEntity());
 auto &leaderboard(manager.addEntity());
+auto &info(manager.addEntity());
 auto &lbutton(manager.addEntity());
 auto &sky(manager.addEntity());
 auto &gameover(manager.addEntity());
@@ -91,8 +96,6 @@ auto &gasButton(manager.addEntity());
 auto &brakeButton(manager.addEntity());
 
 string Game::name;
-//
-// Entity *coin[10];
 
 enum groupLabels : size_t
 {
@@ -116,18 +119,17 @@ Game::~Game() {}
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
-    // cout << "Enter Your Name: ";
+
     system("clear");
 
     int flags = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
-    // cin >> name;
-    SDL_Init(SDL_INIT_EVERYTHING);
 
-    // cout<<3;
+    SDL_Init(SDL_INIT_EVERYTHING);
 
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
     bgm = Mix_LoadMUS("assets/bgm.mp3");
+
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     isRunning = (renderer) ? true : false;
@@ -139,8 +141,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     coinSound = Mix_LoadWAV("assets/coin.wav");
     fuelLowSound = Mix_LoadWAV("assets/beep.mp3");
     neckCrackSound = Mix_LoadWAV("assets/neckcrack.mp3");
+    buttonSound = Mix_LoadWAV("assets/button.mp3");
     gameOverSound = Mix_LoadWAV("assets/gameover.mp3");
-
+    kbSound = Mix_LoadWAV("assets/kb.mp3");
     menu.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     menu.addComponent<SpriteComponent>("assets/menu.jpg");
 
@@ -160,6 +163,14 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     startbutton.addComponent<SpriteComponent>(brownstart);
     startbutton.getComponent<TransformComponent>().position.x = width / 2 - startbutton.getComponent<SpriteComponent>().destRect.w / 2;
     startbutton.addComponent<ColliderComponent>("sbutton");
+
+    browni = TextureManager::loadTexture("assets/ibuttonb.png");
+    whitei1 = TextureManager::loadTexture("assets/ibuttonw1.png");
+    whitei2 = TextureManager::loadTexture("assets/ibuttonw2.png");
+
+    iButton.addComponent<TransformComponent>(7, 570, 900, 900, 0.073);
+    iButton.addComponent<SpriteComponent>(browni);
+    iButton.addComponent<ColliderComponent>("ibutton");
 
     brownl = TextureManager::loadTexture("assets/lbuttonb.png");
     whitel1 = TextureManager::loadTexture("assets/lbuttonw1.png");
@@ -216,6 +227,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     leaderboard.addComponent<TransformComponent>(0, 0, 960, 640, 1);
     leaderboard.addComponent<SpriteComponent>("assets/leaderboard.png");
+
+    info.addComponent<TransformComponent>(0, 0, 960, 640, 1);
+    info.addComponent<SpriteComponent>("assets/info.png");
 
     scoreCoin.addComponent<TransformComponent>(20, 20, 100, 100, 0.5);
     scoreCoin.addComponent<SpriteComponent>("assets/coin.png");
@@ -277,7 +291,7 @@ void Game::gameOverFunc()
     bgg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
 
     gari.getComponent<SpriteComponent>().setTexfromTex(car);
-    // Score::inputScore();
+
     Score::addScore(currentScore, name);
     dq.clear();
     dq.push_back(0);
@@ -293,13 +307,14 @@ void Game::gameOverFunc()
     SDL_Delay(4000);
     gari.getComponent<SpriteComponent>().isGameOver = 0;
     SDL_DestroyTexture(scoreTex);
-    // takeNameInput();
+
     setMenu();
 }
 void Game::handleEvents()
 {
     SDL_PollEvent(&event);
     startCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), startbutton.getComponent<ColliderComponent>());
+    iCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), iButton.getComponent<ColliderComponent>());
     endCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), endbutton.getComponent<ColliderComponent>());
     lCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), lbutton.getComponent<ColliderComponent>());
     gasCursorCollision = Collision::AABB(cursor.getComponent<ColliderComponent>(), gasButton.getComponent<ColliderComponent>());
@@ -309,24 +324,12 @@ void Game::handleEvents()
     switch (event.type)
     {
     case SDL_KEYDOWN:
-        // switch (Game::event.key.keysym.sym)
-        // {
-        // case SDLK_RIGHT:
-        //     moveRight = 1;
-        //     break;
-        // case SDLK_LEFT:
-        //     moveLeft = 1;
-        //     break;
-        // }
-        // break;
-        // case SDL_KEYUP:
-        // moveLeft = moveRight = 0;
-        if (event.key.keysym.sym == SDLK_ESCAPE)
-            setMenu();
-        else if (event.key.keysym.sym == SDLK_m)
+
+        if (event.key.keysym.sym == SDLK_m)
         {
             if (musicOn)
             {
+
                 Mix_PauseMusic();
                 musicOn = 0;
                 musicButton.getComponent<SpriteComponent>().setTexfromTex(musicoffTex);
@@ -343,7 +346,7 @@ void Game::handleEvents()
         isRunning = false;
         if (currentScore)
         {
-            // Score::inputScore();
+
             Score::addScore(currentScore, name);
         }
 
@@ -365,23 +368,35 @@ void Game::handleEvents()
         }
         if (inMenu && event.button.button == SDL_BUTTON_LEFT)
         {
-            if (!inLeaderboard)
+            if (!inLeaderboard & !inInfo)
             {
                 if (startCursorCollision)
                 {
                     majhkhanerstart = 1;
                     startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart2);
-                    // takeNameInput();
+                    if (musicOn)
+                        Mix_PlayChannel(-1, buttonSound, 0);
                 }
                 if (endCursorCollision)
                 {
                     majhkhanerend = 1;
                     endbutton.getComponent<SpriteComponent>().setTexfromTex(whitend2);
+                    if (musicOn)
+                        Mix_PlayChannel(-1, buttonSound, 0);
                 }
                 if (lCursorCollision)
                 {
                     majhkhanerl = 1;
                     lbutton.getComponent<SpriteComponent>().setTexfromTex(whitel2);
+                    if (musicOn)
+                        Mix_PlayChannel(-1, buttonSound, 0);
+                }
+                if (iCursorCollision)
+                {
+                    majhkhaneri = 1;
+                    iButton.getComponent<SpriteComponent>().setTexfromTex(whitei2);
+                    if (musicOn)
+                        Mix_PlayChannel(-1, buttonSound, 0);
                 }
             }
         }
@@ -411,6 +426,8 @@ void Game::handleEvents()
             }
             if (inLeaderboard)
                 inLeaderboard = majhkhanerl = 0;
+            else if (inInfo)
+                inInfo = majhkhaneri = 0;
             else
             {
                 if (startCursorCollision)
@@ -430,9 +447,11 @@ void Game::handleEvents()
                 {
                     inLeaderboard ^= 1;
                 }
+                else if (iCursorCollision)
+                    inInfo ^= 1;
 
                 else
-                    majhkhanerend = majhkhanerstart = majhkhanerl = 0;
+                    majhkhanerend = majhkhanerstart = majhkhanerl = majhkhaneri = 0;
             }
         }
     default:
@@ -442,6 +461,11 @@ void Game::handleEvents()
         startbutton.getComponent<SpriteComponent>().setTexfromTex(whitestart1);
     else if (!majhkhanerstart)
         startbutton.getComponent<SpriteComponent>().setTexfromTex(brownstart);
+
+    if (!majhkhaneri && iCursorCollision)
+        iButton.getComponent<SpriteComponent>().setTexfromTex(whitei1);
+    else if (!majhkhaneri)
+        iButton.getComponent<SpriteComponent>().setTexfromTex(browni);
 
     if (!majhkhanerend && endCursorCollision)
         endbutton.getComponent<SpriteComponent>().setTexfromTex(whitend1);
@@ -488,7 +512,6 @@ void kiBackgroundMathaNoshtoLagaCoin(bool is_hill)
         a.addComponent<KeyboardController>(bg.getComponent<TransformComponent>());
         a.addGroup(groupMap);
     }
-    // cout << endl;
 }
 void Game::update()
 {
@@ -504,19 +527,11 @@ void Game::update()
         gari.getComponent<SpriteComponent>().setTexfromTex(neckCrackCar);
     }
     gari.getComponent<SpriteComponent>().isGameOver--;
-    // cout << gari.getComponent<SpriteComponent>().isGameOver << endl;
-    // gameOverFunc();
-    // cout << currentFuel << endl;
+
     manager.refresh();
     manager.update();
     if (currentFuel <= 0)
         gameOverFunc();
-    if (bg.getComponent<TransformComponent>().velocity.x < 0)
-    {
-        if (musicOn)
-
-            Mix_PlayChannel(-1, engine, 0);
-    }
 
     if (bg.getComponent<TransformComponent>().position.x < -960)
     {
@@ -538,7 +553,6 @@ void Game::update()
         bgg.getComponent<TransformComponent>().position.x = 960;
         sky.getComponent<TransformComponent>().position.x = 0;
         kiBackgroundMathaNoshtoLagaCoin(dq[i]);
-        // cout << i << dq[i] << endl;
     }
     else if (bgg.getComponent<TransformComponent>().position.x > 960)
     {
@@ -549,8 +563,7 @@ void Game::update()
         previsHill = isHill;
         if (i <= 0)
             dq.push_front(isHill), i++;
-        // if (!dq[i - 1])
-        //     dq.push_front(isHill), i++;
+
         if (!dq[i - 1])
         {
             bg.getComponent<SpriteComponent>().setTexfromTex(bgwohillTex);
@@ -563,8 +576,6 @@ void Game::update()
         bgg.getComponent<TransformComponent>().position.x = 0;
         sky.getComponent<TransformComponent>().position.x = -960;
     }
-    // if (abs(gari.getComponent<SpriteComponent>().angle - gari.getComponent<SpriteComponent>().prevAngle) > 30 and abs(gari.getComponent<KeyboardController>().jiniser_y - gari.getComponent<KeyboardController>().matir_y) < 1)
-    //     gameOverFunc();
 
     SDL_GetMouseState(&x, &y);
     cursor.getComponent<TransformComponent>().position.x = x;
@@ -600,7 +611,6 @@ void Game::render()
     if (isNameMenu)
     {
 
-        // takeNameInput();
         isNameMenu = 0;
     }
     else if (inMenu)
@@ -629,10 +639,15 @@ void Game::render()
                 SDL_DestroyTexture(scoreTex);
             }
         }
+        else if (inInfo)
+        {
+            info.draw();
+        }
         else
         {
             menu.draw();
             startbutton.draw();
+            iButton.draw();
             lbutton.draw();
             endbutton.draw();
         }
@@ -649,7 +664,7 @@ void Game::render()
         src.w = 1000;
         src.h = 900;
         tempTex = TextureManager::CreateTextTexture(Game::font, to_string(currentScore), 83, 51, 44);
-        // fuelTex = TextureManager::CreateTextTexture(Game::font, to_string(currentFuel));
+
         fuelbarTex = TextureManager::loadTexture("assets/fuelbar.png");
         for (auto &t : tiles)
             t->draw();
@@ -717,16 +732,12 @@ void Game::takeNameInput()
     name.clear();
     SDL_StartTextInput();
     bool running = true;
-    // SDL_Event *event;
+
     while (running)
     {
         SDL_RenderClear(renderer);
         eyn.draw();
-        // SDL_GetMouseState(&x, &y);
-        // cout << x << ' ' << y << endl;
-        // cout << cursor.getComponent<TransformComponent>().position.x << ' ' << cursor.getComponent<TransformComponent>().position.y << endl;
-        // cursor.getComponent<TransformComponent>().position.x = x;
-        // cursor.getComponent<TransformComponent>().position.y = y;
+
         while (SDL_PollEvent(&Game::event) != 0)
         {
             switch (Game::event.type)
@@ -734,11 +745,14 @@ void Game::takeNameInput()
             case SDL_QUIT:
                 isRunning = false;
                 running = false;
-                // return;
+
                 break;
             case SDL_TEXTINPUT:
                 if (name.size() < 9)
+                {
                     name += Game::event.text.text;
+                    Mix_PlayChannel(-1, kbSound, 0);
+                }
                 break;
             case SDL_KEYDOWN:
                 if (Game::event.key.keysym.sym == SDLK_BACKSPACE && !name.empty())
@@ -750,13 +764,7 @@ void Game::takeNameInput()
                     running = false;
                 }
                 break;
-                // case SDL_KEYUP:
-                //     if (event.key.keysym.sym == SDLK_RETURN)
-                //         eyn.getComponent<SpriteComponent>().setTexfromTex();
             }
-
-            // cursor.draw();
-            // tempTex;
         }
         src.x = src.y = 0;
         dest.y = 352;
@@ -766,7 +774,6 @@ void Game::takeNameInput()
         src.w = 10000;
         src.h = 9000;
 
-        // cout << name << endl;
         if (name.size())
             tempTex = TextureManager::CreateTextTexture(Game::font, name, 83, 51, 44);
         TextureManager::Draw(tempTex, src, dest);
@@ -776,6 +783,4 @@ void Game::takeNameInput()
     }
 
     SDL_StopTextInput();
-
-    // cout << 33 << name << endl;
 }
