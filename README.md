@@ -27,7 +27,7 @@ Hill Climb Racing is a side-scrolling racing game where players navigate challen
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/mithunvoe/Hill-Climb-Racing
 cd Hill-Climb-Racing
 ```
 
