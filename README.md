@@ -1,6 +1,7 @@
 # Hill Climb Racing
 
-A 2D physics-based racing game developed as a lab project for CSE-1211 course using SDL2 and C++.
+Tried to make a clone of the OG game "Hill Climb Racing" by Fingersoft using SDL2 and C++ as a lab project for CSE-1211 course.
+
 
 ## Description
 
